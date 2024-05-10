@@ -1,0 +1,39 @@
+{% macro render_items(item) %}
+<li>Detalles del producto: {{item}}</li>
+{% endmacro %}
+
+{% macro render_pagination(pagination, endpoint) %}
+<!--
+<div class="page-item">
+  {{ pagination.first }} - {{ pagination.last }} de {{ pagination.total }}
+</div>
+-->
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        <li class="page-item">
+            <a class="page-link" href="{{url_for(endpoint)}}?p={{1}}">Inicio</a>
+        </li>
+        {% for page in pagination.iter_pages() %}
+        {% if page %}
+        {% if page != pagination.page %}
+
+        <li class="page-item">
+            <a class="page-link" href="{{url_for(endpoint)}}?p={{page}}">{{ page }}</a>
+        </li>
+
+        {% else %}
+        <li class="page-item">
+            <a class="page-link active" href="{{url_for(endpoint)}}?p={{page}}">{{ page }}</a>
+        </li>
+        {% endif %}
+        {% else %}
+        <span class=ellipsis>…</span>
+        {% endif %}
+        {% endfor %}
+        <li class="page-item">
+            <a class="page-link" href="{{url_for(endpoint)}}?p={{pagination.pages}}">Final</a>
+        </li>
+    </ul>
+</nav>
+
+{% endmacro %}
