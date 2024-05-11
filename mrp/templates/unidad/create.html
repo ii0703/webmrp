@@ -3,24 +3,32 @@
 {% block content %}
 
 <section class="container-sm">
-    <h3 class="text-center mt-3 mb-3">{% block title %}Ingresar Producto{% endblock %}</h3>
+    <h3 class="text-center mt-3 mb-3">{% block title %}Insertar Unidad{% endblock %}</h3>
     <form action="" method="post">
         <div class="form-group">
-            <label for="title">Código</label>
-            <input type="text" class="form-control" id="codigo" name="codigo" required>
+            <label for="tipo-unidad">Tipo de unidad</label>
+            <select class="form-select form-select-sm mb-3" id="tipo-unidad" name="tipo-unidad">
+                {%for tipo in tipos%}
+                <option value="{{tipo.id}}">{{tipo.nombre}}</option>
+                {%endfor%}
+            </select>
         </div>
         <div class="form-group">
-            <label for="title">Nombre</label>
-            <input type="text" class="form-control" id="nombre" name="nombre" required>
+            <label for="simbolo">Símbolo</label>
+            <input type="text" class="form-control" id="simbolo" name="simbolo" required maxlength="6">
         </div>
         <div class="form-group">
-            <label for="title">Precio</label>
-            <input type="text" class="form-control" id="precio" name="precio" required>
+            <label for="nombre">Nombre</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" required maxlength="100">
+        </div>
+        <div class="form-check form-switch mt-2">
+            <input class="form-check-input" type="checkbox" role="switch" id="esta_activo" name="esta_activo" checked>
+            <label class="form-check-label" for="esta_activo">Activo</label>
         </div>
         <br>
         <div class="text-center">
             <input type="submit" class="btn btn-primary" value="Guardar">
-            <a href="{{ url_for('producto.index')}}" class="btn btn-secondary">Cancelar</a>
+            <a href="{{ url_for('unidad.index')}}" class="btn btn-secondary">Cancelar</a>
         </div>
     </form>
 </section>

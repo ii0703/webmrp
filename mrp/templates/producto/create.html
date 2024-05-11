@@ -4,18 +4,81 @@
 
 <section class="container-sm">
     <h3 class="text-center mt-3 mb-3">{% block title %}Ingresar Producto{% endblock %}</h3>
-    <form action="" method="post">
+    <form action="" method="post" class="container-sm">
         <div class="form-group">
-            <label for="title">Código</label>
-            <input type="text" class="form-control" id="codigo" name="codigo" required>
+            <label for="sku">Código</label>
+            <input type="text" class="form-control" id="sku" name="sku" required maxlength="13">
         </div>
         <div class="form-group">
-            <label for="title">Nombre</label>
-            <input type="text" class="form-control" id="nombre" name="nombre" required>
+            <label for="categoria-producto">Categoría de producto</label>
+            <select class="form-select form-select-sm mb-3" id="categoria-producto" name="categoria-producto">
+                {%for categoria_producto in categorias_producto%}
+                <option value="{{categoria_producto.id}}"> {{categoria_producto.nombre}}</option>
+                {%endfor%}
+            </select>
         </div>
         <div class="form-group">
-            <label for="title">Precio</label>
-            <input type="text" class="form-control" id="precio" name="precio" required>
+            <label for="nombre">Nombre</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" required maxlength="100">
+        </div>
+        <div class="form-group">
+            <label for="unidad">Unidad</label>
+            <select class="form-select form-select-sm mb-3" id="unidad" name="unidad">
+                {%for unidad in unidades%}
+                <option value="{{unidad.id}}"> {{unidad.nombre}}</option>
+                {%endfor%}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="cantidad-total">Cantidad</label>
+            <input type="number" class="form-control" id="cantidad-total" name="cantidad-total" required>
+        </div>
+        <div class="form-group">
+            <label for="costo">Costo</label>
+            <input type="number" class="form-control" id="costo" name="costo" required>
+        </div>
+        <div class="form-group">
+            <label for="porcentaje-impuesto">Porcentaje impuesto (100% -> 100)</label>
+            <input type="number" class="form-control" id="porcentaje-impuesto" name="porcentaje-impuesto" required>
+        </div>
+        <div class="form-group">
+            <label for="redondeo">Factor de redondeo</label>
+            <input type="number" class="form-control" id="redondeo" name="redondeo" required>
+        </div>
+        <div class="form-group mt-2">
+            <label for="redondeo">Modo de cálculo de utilidad</label>
+
+            <input type="radio" class="btn-check"
+                   name="modo-utilidad"
+                   id="modo-utilidad-porcentaje-utilidad"
+                   autocomplete="off"
+                   value="porcentaje" checked>
+            <label class="btn" for="modo-utilidad-porcentaje-utilidad">Porcentaje utilidad</label>
+
+            <input type="radio" class="btn-check"
+                   name="modo-utilidad"
+                   id="modo-utilidad-monto-utilidad"
+                   autocomplete="off"
+                   value="monto">
+            <label class="btn" for="modo-utilidad-monto-utilidad">Monto utilidad</label>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="utilidad-porcentaje">Porcentaje de utilidad (100% -> 100)</label>
+                <input type="number" class="form-control"
+                       id="utilidad-porcentaje" name="utilidad-porcentaje"
+                       required value="0">
+            </div>
+            <div class="col">
+                <label for="utilidad-monto">Monto de Utilidad</label>
+                <input type="number" class="form-control"
+                       id="utilidad-monto" name="utilidad-monto"
+                       required value="0">
+            </div>
+        </div>
+        <div class="form-check form-switch mt-2">
+            <input class="form-check-input" type="checkbox" role="switch" id="esta-activo" name="esta-activo" checked>
+            <label class="form-check-label" for="esta-activo">Activo</label>
         </div>
         <br>
         <div class="text-center">

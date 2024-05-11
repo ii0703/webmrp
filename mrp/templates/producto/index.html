@@ -11,20 +11,25 @@
     <table class="table">
         <thead>
         <tr>
-            <th class="col">Código</th>
+            <th class="col">SKU</th>
             <th class="col">Nombre</th>
-            <th class="col" colspan="2">Opciones</th>
+            <th class="col">Opciones</th>
         </tr>
         </thead>
         <tbody>
         {% for dato in datos | reverse %}
         <tr>
             <td>
-                <h5>{{dato.codigo}}</h5>
+                <h5>{{dato.sku}}</h5>
+            </td>
+            <td>
                 <p>{{dato.nombre}}</p>
             </td>
-            <td><a href="{{url_for('producto.update', id = dato.id)}}" class="btn btn-info btn-sm">Editar</a></td>
-            <td><a href="{{url_for('producto.delete', id = dato.id)}}" class="btn btn-danger btn-sm">Eliminar</a></td>
+            <td>
+                <a href="{{url_for('producto.update', id = dato.id)}}" class="btn btn-info btn-sm">Editar</a>
+                <br>
+                <a href="{{url_for('producto.delete', id = dato.id)}}" class="btn btn-danger btn-sm">Eliminar</a>
+            </td>
         </tr>
         {% endfor %}
         </tbody>

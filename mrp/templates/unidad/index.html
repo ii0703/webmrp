@@ -4,14 +4,14 @@
 {% block content %}
 <section class="container-fluid">
     <nav class="navbar">
-        <h1>{% block title %}Lista de Producto{% endblock %}</h1>
-        <a href="{{url_for('producto.create')}}" class="btn btn-success">Nuevo</a>
+        <h1>{% block title %}Lista de Unidades{% endblock %}</h1>
+        <a href="{{url_for('unidad.create')}}" class="btn btn-success">Nuevo</a>
     </nav>
 
     <table class="table">
         <thead>
         <tr>
-            <th class="col">Código</th>
+            <th class="col">Símbolo</th>
             <th class="col">Nombre</th>
             <th class="col" colspan="2">Opciones</th>
         </tr>
@@ -20,18 +20,25 @@
         {% for dato in datos | reverse %}
         <tr>
             <td>
-                <h5>{{dato.codigo}}</h5>
+                <h5>{{dato.simbolo}}</h5>
+            </td>
+            <td>
                 <p>{{dato.nombre}}</p>
             </td>
-            <td><a href="{{url_for('producto.update', id = dato.id)}}" class="btn btn-info btn-sm">Editar</a></td>
-            <td><a href="{{url_for('producto.delete', id = dato.id)}}" class="btn btn-danger btn-sm">Eliminar</a></td>
+            <td>
+                <a href="{{url_for('unidad.update', id = dato.id)}}"
+                   class="btn btn-info btn-sm mt-1">Editar</a>
+                <br>
+                <a href="{{url_for('unidad.delete', id = dato.id)}}"
+                   class="btn btn-danger btn-sm mt-1">Eliminar</a>
+            </td>
         </tr>
         {% endfor %}
         </tbody>
     </table>
 
 
-{{macros.render_pagination(datos,'producto.index')}}
+{{macros.render_pagination(datos,'unidad.index')}}
 
 
 </section>

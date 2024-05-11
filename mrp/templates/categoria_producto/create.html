@@ -3,15 +3,15 @@
 {% block content %}
 
 <section class="container-sm">
-    <h3 class="text-center mt-3 mb-3">{% block title %}Ingresar Categoría de Producto{% endblock %}</h3>
+    <h3 class="text-center mt-3 mb-3">{% block title %}Ingresar Tipos de Unidades{% endblock %}</h3>
     <form action="" method="post">
         <div class="form-group">
             <label for="codigo">Código</label>
-            <input type="text" class="form-control" id="codigo" name="codigo" required>
+            <input type="text" class="form-control" id="codigo" name="codigo" required maxlength="6">
         </div>
         <div class="form-group">
             <label for="nombre">Nombre</label>
-            <input type="text" class="form-control" id="nombre" name="nombre" required>
+            <input type="text" class="form-control" id="nombre" name="nombre" required maxlength="100">
         </div>
         <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" role="switch" id="esta_activo" name="esta_activo" checked>

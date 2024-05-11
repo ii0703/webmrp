@@ -1,13 +1,15 @@
 from flask import Blueprint, render_template, request, redirect, url_for, g
 from mrp.auth import login_required
-from .models import Producto
+from .models import Producto, CategoriaProducto, Unidad
 from mrp import db
 
 bp = Blueprint('producto', __name__, url_prefix='/producto')
 
+
 def get(id):
     dato = Producto.query.get_or_404(id)
     return dato
+
 
 @bp.route('/list')
 @login_required
@@ -21,36 +23,107 @@ def index():
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():
-    if request.method == 'POST':
-        codigo = request.form['codigo']
-        nombre = request.form['nombre']
-        precio = request.form['precio']
+    categorias_producto = (CategoriaProducto
+                           .query.filter_by(esta_activo=True)
+                           .order_by(CategoriaProducto.nombre).all())
+    unidades = (Unidad.query
+                .filter_by(esta_activo=True)
+                .order_by(Unidad.nombre).all())
 
-        producto = Producto(codigo=codigo, nombre=nombre, precio=precio)
+    if request.method == 'POST':
+        sku = request.form['sku']
+        categoria_producto_id = request.form['categoria-producto']
+        nombre = request.form['nombre']
+        unidad_id = request.form['unidad']
+        cantidad_total = request.form['cantidad-total']
+        costo = request.form['costo']
+        porcentaje_impuesto = request.form['porcentaje-impuesto']
+        redondeo = request.form['redondeo']
+        modo_utilidad = request.form['modo-utilidad']
+        utilidad_monto = 0
+        utilidad_porcentaje = 0
+        if modo_utilidad == 'porcentaje':
+            utilidad_porcentaje = request.form['utilidad-porcentaje']
+            utilildad_es_porcentaje = True
+        else:
+            utilidad_porcentaje = 0
+        if utilidad_monto == 'monto':
+            utilidad_monto = request.form['utilidad-monto']
+            utilildad_es_porcentaje = False
+        else:
+            utilidad_porcentaje = 0
+        esta_activo = request.form.get('esta-activo') == 'on'
+
+        producto = Producto(sku=sku,
+                            nombre=nombre,
+                            categoria_producto_id=categoria_producto_id,
+                            unidad_id=unidad_id,
+                            cantidad_total=cantidad_total,
+                            costo=costo,
+                            porcentaje_impuesto=porcentaje_impuesto,
+                            redondeo=redondeo,
+                            utilildad_es_porcentaje=utilildad_es_porcentaje,
+                            porcentaje_utilidad=utilidad_porcentaje,
+                            monto_utilidad=utilidad_monto,
+                            esta_activo=esta_activo
+                            )
 
         db.session.add(producto)
         db.session.commit()
 
         return redirect(url_for('producto.index'))
 
-    return render_template('producto/create.html')
+    return render_template('producto/create.html', categorias_producto=categorias_producto, unidades=unidades)
 
 
 @bp.route('/update/<int:id>', methods=['GET', 'POST'])
 @login_required
 def update(id):
     producto = get(id)
+    categorias_producto = (CategoriaProducto
+                           .query.filter_by(esta_activo=True)
+                           .order_by(CategoriaProducto.nombre).all())
+    unidades = (Unidad.query
+                .filter_by(esta_activo=True)
+                .order_by(Unidad.nombre).all())
 
     if request.method == 'POST':
-        producto.codigo = request.form['codigo']
+        producto.sku = request.form['sku']
+        producto.categoria_producto_id = request.form['categoria-producto']
         producto.nombre = request.form['nombre']
-        producto.precio = request.form['precio']
+        producto.unidad_id = request.form['unidad']
+        producto.cantidad_total = request.form['cantidad-total']
+        producto.costo = request.form['costo']
+        producto.porcentaje_impuesto = request.form['porcentaje-impuesto']
+        producto.redondeo = request.form['redondeo']
+        modo_utilidad = request.form['modo-utilidad']
+        utilidad_monto = 0
+        utilidad_porcentaje = 0
+        if modo_utilidad == 'porcentaje':
+            utilidad_porcentaje = request.form['utilidad-porcentaje']
+            utilildad_es_porcentaje = True
+        else:
+            utilidad_porcentaje = 0
+
+        if utilidad_monto == 'monto':
+            utilidad_monto = request.form['utilidad-monto']
+            utilildad_es_porcentaje = False
+        else:
+            utilidad_porcentaje = 0
+
+        producto.utilidad_porcentaje = utilidad_porcentaje
+        producto.utilidad_monto = utilidad_monto
+        producto.utilildad_es_porcentaje = utilildad_es_porcentaje
+
+        producto.esta_activo = request.form.get('esta-activo') == 'on'
 
         db.session.commit()
 
         return redirect(url_for('producto.index'))
 
-    return render_template('producto/update.html', producto = producto)
+    return render_template('producto/update.html', producto=producto, categorias_producto=categorias_producto,
+                           unidades=unidades)
+
 
 @bp.route('/delete/<int:id>')
 @login_required

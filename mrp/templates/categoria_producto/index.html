@@ -4,7 +4,7 @@
 {% block content %}
 <section class="container-fluid">
     <nav class="navbar">
-        <h1>{% block title %}Lista de Categorías de Productos{% endblock %}</h1>
+        <h1>{% block title %}Lista de Tipos de Productos{% endblock %}</h1>
         <a href="{{url_for('categoria_producto.create')}}" class="btn btn-success">Nuevo</a>
     </nav>
 
@@ -13,7 +13,7 @@
         <tr>
             <th class="col">Código</th>
             <th class="col">Nombre</th>
-            <th class="col" colspan="2">Opciones</th>
+            <th class="col">Opciones</th>
         </tr>
         </thead>
         <tbody>
@@ -21,17 +21,23 @@
         <tr>
             <td>
                 <h5>{{dato.codigo}}</h5>
+            </td>
+            <td>
                 <p>{{dato.nombre}}</p>
             </td>
-            <td><a href="{{url_for('categoria_producto.update', id = dato.id)}}" class="btn btn-info btn-sm">Editar</a></td>
-            <td><a href="{{url_for('categoria_producto.delete', id = dato.id)}}" class="btn btn-danger btn-sm">Eliminar</a></td>
+            <td>
+                <a href="{{url_for('categoria_producto.update', id = dato.id)}}"
+                   class="btn btn-info btn-sm mt-1">Editar</a>
+                <br>
+                <a href="{{url_for('categoria_producto.delete', id = dato.id)}}"
+                   class="btn btn-danger btn-sm mt-1">Eliminar</a></td>
         </tr>
         {% endfor %}
         </tbody>
     </table>
 
 
-{{macros.render_pagination(datos,'categoria_producto.index')}}
+    {{macros.render_pagination(datos,'categoria_producto.index')}}
 
 
 </section>

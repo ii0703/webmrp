@@ -16,6 +16,12 @@ def create_app():
     from . import auth
     app.register_blueprint(auth.bp)
 
+    from . import tipo_unidad
+    app.register_blueprint(tipo_unidad.bp)
+
+    from . import unidad
+    app.register_blueprint(unidad.bp)
+
     from . import categoria_producto
     app.register_blueprint(categoria_producto.bp)
 

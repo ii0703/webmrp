@@ -139,7 +139,7 @@ class Producto(db.Model):
     utilildad_es_porcentaje: Mapped[bool] = mapped_column(Boolean, default=True)
     porcentaje_utilidad: Mapped[float] = mapped_column(Double, default=0.0)
     monto_utilidad: Mapped[float] = mapped_column(Double, default=0.0)
-    fecha_registro: Mapped[date] = mapped_column(Date, server_default=func.now())
+    fecha_registro: Mapped[date] = mapped_column(Date, default=datetime.now())
     esta_activo: Mapped[bool] = mapped_column(Boolean, default=True)
     lotes: Mapped[list['ProductoLote']] = relationship(back_populates='producto')
 
@@ -169,7 +169,7 @@ class ProductoLote(db.Model):
     monto_utilidad: Mapped[float] = mapped_column(Double, default=0.0)
     fecha_registro: Mapped[date] = mapped_column(Date, server_default=func.now())
     esta_activo: Mapped[bool] = mapped_column(Boolean, default=True)
-    fecha_vencimiento: Mapped[Optional[date]] = mapped_column(Date)
+    fecha_vencimiento: Mapped[Optional[datetime]] = mapped_column(DateTime)
     __table_args__ = (
         Index("idx_producto_lote_bp", bodega_id, producto_id, unique=False),
         # UniqueConstraint(bodega_id, producto_id, name='uq_producto_lote_bp'),
