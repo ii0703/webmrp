@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="container-sm">
+    <h3 class="text-center mt-3 mb-3">{% block title %}Actualizar Producto{% endblock %}</h3>
+    <form action="" method="post">
+        <div class="form-group">
+            <label for="title">Código</label>
+            <input type="text" class="form-control" id="codigo" name="codigo" required value="{{producto.codigo}}">
+        </div>
+        <div class="form-group">
+            <label for="title">Nombre</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" required value="{{producto.nombre}}">
+        </div>
+        <div class="form-group">
+            <label for="title">Precio</label>
+            <input type="number" class="form-control" id="precio" name="precio" required value="{{producto.precio}}">
+        </div>
+        <br>
+        <div class="text-center">
+            <input type="submit" class="btn btn-primary" value="Guardar">
+            <a href="{{ url_for('producto.index')}}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</section>
+{% endblock%}
