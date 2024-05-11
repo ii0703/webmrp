@@ -3,24 +3,24 @@
 {% block content %}
 
 <section class="container-sm">
-    <h3 class="text-center mt-3 mb-3">{% block title %}Ingresar Producto{% endblock %}</h3>
+    <h3 class="text-center mt-3 mb-3">{% block title %}Ingresar Categoría de Producto{% endblock %}</h3>
     <form action="" method="post">
         <div class="form-group">
-            <label for="title">Código</label>
+            <label for="codigo">Código</label>
             <input type="text" class="form-control" id="codigo" name="codigo" required>
         </div>
         <div class="form-group">
-            <label for="title">Nombre</label>
+            <label for="nombre">Nombre</label>
             <input type="text" class="form-control" id="nombre" name="nombre" required>
         </div>
-        <div class="form-group">
-            <label for="title">Precio</label>
-            <input type="text" class="form-control" id="precio" name="precio" required>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="esta_activo" name="esta_activo" checked>
+            <label class="form-check-label" for="esta_activo">Activo</label>
         </div>
         <br>
         <div class="text-center">
             <input type="submit" class="btn btn-primary" value="Guardar">
-            <a href="{{ url_for('producto.index')}}" class="btn btn-secondary">Cancelar</a>
+            <a href="{{ url_for('categoria_producto.index')}}" class="btn btn-secondary">Cancelar</a>
         </div>
     </form>
 </section>
