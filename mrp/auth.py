@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, url_for, redirect, flash, session, g
 # from flask_session import Session
-from .models import User
+from .models import Usuario
 from werkzeug.security import generate_password_hash, check_password_hash
-from todor import db
+from mrp import db
 
 bp = Blueprint('auth',__name__, url_prefix='/auth')
 
@@ -11,10 +11,11 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        nombre = request.form['nombre']
 
-        user = User(username=username, password=generate_password_hash(password))
+        user = Usuario(username=username, password=generate_password_hash(password), nombre=nombre)
 
-        user_name = User.query.filter_by(username=username).first()
+        user_name = Usuario.query.filter_by(username=username).first()
 
         error = None
 
@@ -35,9 +36,10 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
+
         error = None
 
-        user = User.query.filter_by(username=username).first()
+        user = Usuario.query.filter_by(username=username).first()
 
         if user is None:
             error = 'Incorrect username.'
@@ -48,7 +50,7 @@ def login():
         if error is None:
             session.clear()
             session['user_id'] = user.id
-            return redirect(url_for('todo.index'))
+            return redirect(url_for('index'))
 
         flash(error)
     return render_template('auth/login.html')
@@ -60,7 +62,7 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = User.query.get_or_404(user_id)
+        g.user = Usuario.query.get_or_404(user_id)
         #return redirect(url_for('auth.login'))
 
 @bp.route('/logout')

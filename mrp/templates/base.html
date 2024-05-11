@@ -6,20 +6,34 @@
     <title>{% block title %}{% endblock %}</title>
     <link href="{{url_for('static',filename='css/bootstrap.min.css')}}" rel="stylesheet">
     <link href="{{url_for('static',filename='css/main.css')}}" rel="stylesheet">
+
 </head>
 <body>
 <nav class="navbar navbar-expand-sm bg-primary" data-bs-theme="dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{url_for('index')}}">Mi primera aplicación</a>
+        <a class="navbar-brand" href="{{url_for('index')}}"><img src="{{url_for('static', filename='img/logo.png')}}" height="60px"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav">
+                {% if g.user %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('producto.index')}}">Productos</a>
+                    <span class="nav-link active">{{ g.user.nombre }}</span>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('auth.logout')}}">Cerrar sesión</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('auth.register')}}">Registrarse</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('auth.login')}}">Iniciar sesión</a>
+                </li>
+                {% endif %}
             </ul>
         </div>
     </div>

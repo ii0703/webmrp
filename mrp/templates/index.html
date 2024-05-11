@@ -4,12 +4,78 @@
 
 {% block content %}
     <div class="container-sm text-center">
-        <h1 class="display-3">Bienvenidos a nuestra primera aplicación</h1>
+        <h1 class="display-2">MRP II0703</h1>
+        <h2 class="display-5">Planificación de los requerimientos de material</h2>
 
-        <p class="lead">Acá podemos aprender a usar Flask</p>
+        <p class="lead display-7">Ingeniería de Operaciones</p>
 
         <hr class="my-4">
-
+        {% if g.user %}
+        <div class="container-sm">
+            <div class="row">
+                <div class="col">
+                    <a href="#" class="btn btn-primary">Opción 1</a>
+                </div>
+                <div class="col">
+                    <a href="#" class="btn btn-primary">Opción 1</a>
+                </div>
+                <div class="col">
+                    <a href="#" class="btn btn-primary">Opción 1</a>
+                </div>
+                <div class="col">
+                    <a href="#" class="btn btn-primary">Opción 1</a>
+                </div>
+                <div class="col">
+                    <a href="#" class="btn btn-primary">Opción 1</a>
+                </div>
+                <div class="col">
+                    <a href="#" class="btn btn-primary">Opción 1</a>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col">
+                    <a href="#" class="btn btn-primary">Opción 1</a>
+                </div>
+                <div class="col">
+                    <a href="#" class="btn btn-primary">Opción 1</a>
+                </div>
+                <div class="col">
+                    <a href="#" class="btn btn-primary">Opción 1</a>
+                </div>
+                <div class="col">
+                    <a href="#" class="btn btn-primary">Opción 1</a>
+                </div>
+                <div class="col">
+                    <a href="#" class="btn btn-primary">Opción 1</a>
+                </div>
+                <div class="col">
+                    <a href="#" class="btn btn-primary">Opción 1</a>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col">
+                    <a href="#" class="btn btn-primary">Opción 1</a>
+                </div>
+                <div class="col">
+                    <a href="#" class="btn btn-primary">Opción 1</a>
+                </div>
+                <div class="col">
+                    <a href="#" class="btn btn-primary">Opción 1</a>
+                </div>
+                <div class="col">
+                    <a href="#" class="btn btn-primary">Opción 1</a>
+                </div>
+                <div class="col">
+                    <a href="#" class="btn btn-primary">Opción 1</a>
+                </div>
+                <div class="col">
+                    <a href="#" class="btn btn-primary">Opción 1</a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <p class="lead text-bg-danger text-black">Debe ingresar para ver opciones</p>
+        {% endif %}
 
     </div>
 {% endblock %}
