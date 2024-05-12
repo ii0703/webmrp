@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+  <h2>Información del Producto</h2>
+  <div class="row">
+    <div class="col-md-6">
+<dl class="row">
+  <dt class="col-sm-3">Description lists</dt>
+  <dd class="col-sm-9">A description list is perfect for defining terms.</dd>
+
+  <dt class="col-sm-3">Euismod</dt>
+  <dd class="col-sm-9">
+    <p>Vestibulum id ligula porta felis euismod semper eget lacinia odio sem nec elit.</p>
+    <p>Donec id elit non mi porta gravida at eget metus.</p>
+  </dd>
+
+  <dt class="col-sm-3">Malesuada porta</dt>
+  <dd class="col-sm-9">Etiam porta sem malesuada magna mollis euismod.</dd>
+
+  <dt class="col-sm-3 text-truncate">Truncated term is truncated</dt>
+  <dd class="col-sm-9">Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</dd>
+
+  <dt class="col-sm-3">Nesting</dt>
+  <dd class="col-sm-9">
+    <dl class="row">
+      <dt class="col-sm-4">Nested definition list</dt>
+      <dd class="col-sm-8">Aenean posuere, tortor sed cursus feugiat, nunc augue blandit nunc.</dd>
+    </dl>
+  </dd>
+</dl>
+<!--      <img src="producto.jpg" class="img-fluid" alt="Producto">-->
+    </div>
+    <div class="col-md-6">
+      <h3>Nombre del Producto</h3>
+      <p><strong>Descripción:</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut velit eget eros malesuada hendrerit.</p>
+      <p><strong>Precio:</strong> $99.99</p>
+      <p><strong>Categoría:</strong> Electrónica</p>
+      <p><strong>Disponibilidad:</strong> En stock</p>
+<!--      <button class="btn btn-primary">Agregar al carrito</button>-->
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col">
+      <h3>Detalles del Producto</h3>
+      <ul class="list-group">
+        <li class="list-group-item"><strong>Material:</strong> Plástico</li>
+        <li class="list-group-item"><strong>Dimensiones:</strong> 10cm x 5cm x 3cm</li>
+        <li class="list-group-item"><strong>Peso:</strong> 200g</li>
+        <li class="list-group-item"><strong>Color:</strong> Negro</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+{% endblock%}

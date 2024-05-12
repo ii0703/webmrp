@@ -20,7 +20,8 @@
         {% for dato in datos | reverse %}
         <tr>
             <td>
-                <h5>{{dato.sku}}</h5>
+                <a href="{{url_for('producto.view', id = dato.id)}}" >{{dato.sku}}</a>
+<!--                <h5>{{dato.sku}}</h5>-->
             </td>
             <td>
                 <p>{{dato.nombre}}</p>

@@ -42,6 +42,7 @@ def create():
         modo_utilidad = request.form['modo-utilidad']
         utilidad_monto = 0
         utilidad_porcentaje = 0
+        utilildad_es_porcentaje = True
         if modo_utilidad == 'porcentaje':
             utilidad_porcentaje = request.form['utilidad-porcentaje']
             utilildad_es_porcentaje = True
@@ -99,6 +100,7 @@ def update(id):
         modo_utilidad = request.form['modo-utilidad']
         utilidad_monto = 0
         utilidad_porcentaje = 0
+        utilildad_es_porcentaje = True
         if modo_utilidad == 'porcentaje':
             utilidad_porcentaje = request.form['utilidad-porcentaje']
             utilildad_es_porcentaje = True
@@ -132,3 +134,8 @@ def delete(id):
     db.session.delete(producto)
     db.session.commit()
     return redirect(url_for('producto.index'))
+
+@bp.route('/view/<int:id>')
+@login_required
+def view(id):
+    return render_template('producto/view.html')

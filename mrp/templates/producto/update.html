@@ -13,7 +13,7 @@
             <label for="categoria-producto">Categoría de producto</label>
             <select class="form-select form-select-sm mb-3" id="categoria-producto" name="categoria-producto">
                 {%for categoria_producto in categorias_producto%}
-                <option value="{{categoria_producto.id}}"> {{categoria_producto.nombre}}</option>
+                <option value="{{categoria_producto.id}}" {%if categoria_producto.id == producto.categoria_producto.id %} selected {% endif %}> {{categoria_producto.nombre}}</option>
                 {%endfor%}
             </select>
         </div>
@@ -25,7 +25,7 @@
             <label for="unidad">Unidad</label>
             <select class="form-select form-select-sm mb-3" id="unidad" name="unidad">
                 {%for unidad in unidades%}
-                <option value="{{unidad.id}}"> {{unidad.nombre}}</option>
+                <option value="{{unidad.id}}" {%if unidad.id == producto.unidad.id %} selected {% endif %}> {{unidad.nombre}}</option>
                 {%endfor%}
             </select>
         </div>
@@ -52,14 +52,14 @@
                    name="modo-utilidad"
                    id="modo-utilidad-porcentaje-utilidad"
                    autocomplete="off"
-                   value="porcentaje" checked>
+                   value="porcentaje" {% if producto.utilildad_es_porcentaje %} checked {%endif%}>
             <label class="btn" for="modo-utilidad-porcentaje-utilidad">Porcentaje utilidad</label>
 
             <input type="radio" class="btn-check"
                    name="modo-utilidad"
                    id="modo-utilidad-monto-utilidad"
                    autocomplete="off"
-                   value="monto">
+                   value="monto" {% if not producto.utilildad_es_porcentaje %} checked {%endif%}>
             <label class="btn" for="modo-utilidad-monto-utilidad">Monto utilidad</label>
         </div>
         <div class="row">
