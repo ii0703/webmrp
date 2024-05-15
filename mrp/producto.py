@@ -3,6 +3,7 @@ from mrp.auth import login_required
 from .models import Producto, CategoriaProducto, Unidad
 from mrp import db
 
+
 bp = Blueprint('producto', __name__, url_prefix='/producto')
 
 
