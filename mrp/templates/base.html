@@ -6,7 +6,15 @@
     <title>{% block title %}{% endblock %}</title>
     <link href="{{url_for('static',filename='css/bootstrap.min.css')}}" rel="stylesheet">
     <link href="{{url_for('static',filename='css/main.css')}}" rel="stylesheet">
-
+  <style>
+    .btn-box {
+      width: 200px;
+      height: 75px;
+      display: flex;
+      justify-content: center; /* Centra horizontalmente */
+      align-items: center; /* Centra verticalmente */
+    }
+  </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-sm bg-primary" data-bs-theme="dark">

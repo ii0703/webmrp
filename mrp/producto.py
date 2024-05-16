@@ -135,7 +135,9 @@ def delete(id):
     db.session.commit()
     return redirect(url_for('producto.index'))
 
+
 @bp.route('/view/<int:id>')
 @login_required
 def view(id):
-    return render_template('producto/view.html')
+    producto = get(id)
+    return render_template('producto/view.html', producto=producto)

@@ -3,35 +3,100 @@
 {% block content %}
 
 <section class="container-sm">
+<form>
+  <div class="form-group row my-2">
+      <div class="col-1">
+          <label for="inputEmail3" class="col-sm-2 col-form-label">Código</label>
+      </div>
+      <div class="col-11">
+          <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+      </div>
+  </div>
+  <div class="form-group row">
+    <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
+    <div class="col-sm-10">
+      <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+    </div>
+  </div>
+  <fieldset class="form-group">
+    <div class="row">
+      <legend class="col-form-label col-sm-2 pt-0 border border-black border-1 ">Radios</legend>
+      <div class="col-sm-10">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="option1" checked>
+          <label class="form-check-label" for="gridRadios1">
+            First radio
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="option2">
+          <label class="form-check-label" for="gridRadios2">
+            Second radio
+          </label>
+        </div>
+        <div class="form-check disabled">
+          <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios3" value="option3" disabled>
+          <label class="form-check-label" for="gridRadios3">
+            Third disabled radio
+          </label>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+  <div class="form-group row">
+    <div class="col-sm-2">Checkbox</div>
+    <div class="col-sm-10">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="gridCheck1">
+        <label class="form-check-label" for="gridCheck1">
+          Example checkbox
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-10">
+      <button type="submit" class="btn btn-primary">Sign in</button>
+    </div>
+  </div>
+</form>
     <h3 class="text-center mt-3 mb-3">{% block title %}Ingresar Producto{% endblock %}</h3>
-    <form action="" method="post" class="container-sm">
+    <form action="" method="post" class="form-inline">
+
         <div class="form-group">
-            <label for="sku">Código</label>
-            <input type="text" class="form-control" id="sku" name="sku" required maxlength="13" value="{{producto.sku}}">
+            <label for="sku" class="col-3">Código</label>
+            <input type="text" class="form-control col-9" id="sku" name="sku" required maxlength="13"
+                   value="{{producto.sku}}">
         </div>
         <div class="form-group">
             <label for="categoria-producto">Categoría de producto</label>
             <select class="form-select form-select-sm mb-3" id="categoria-producto" name="categoria-producto">
                 {%for categoria_producto in categorias_producto%}
-                <option value="{{categoria_producto.id}}" {%if categoria_producto.id == producto.categoria_producto.id %} selected {% endif %}> {{categoria_producto.nombre}}</option>
+                <option value="{{categoria_producto.id}}" {%if categoria_producto.id== producto.categoria_producto.id %}
+                        selected {% endif %}> {{categoria_producto.nombre}}
+                </option>
                 {%endfor%}
             </select>
         </div>
         <div class="form-group">
             <label for="nombre">Nombre</label>
-            <input type="text" class="form-control" id="nombre" name="nombre" required maxlength="100" value="{{producto.nombre}}">
+            <input type="text" class="form-control" id="nombre" name="nombre" required maxlength="100"
+                   value="{{producto.nombre}}">
         </div>
         <div class="form-group">
             <label for="unidad">Unidad</label>
             <select class="form-select form-select-sm mb-3" id="unidad" name="unidad">
                 {%for unidad in unidades%}
-                <option value="{{unidad.id}}" {%if unidad.id == producto.unidad.id %} selected {% endif %}> {{unidad.nombre}}</option>
+                <option value="{{unidad.id}}" {%if unidad.id== producto.unidad.id %} selected {% endif %}>
+                    {{unidad.nombre}}
+                </option>
                 {%endfor%}
             </select>
         </div>
         <div class="form-group">
             <label for="cantidad-total">Cantidad</label>
-            <input type="number" class="form-control" id="cantidad-total" name="cantidad-total" required  value="{{producto.cantidad_total}}">
+            <input type="number" class="form-control" id="cantidad-total" name="cantidad-total" required
+                   value="{{producto.cantidad_total}}">
         </div>
         <div class="form-group">
             <label for="costo">Costo</label>
@@ -39,11 +104,13 @@
         </div>
         <div class="form-group">
             <label for="porcentaje-impuesto">Porcentaje impuesto (100% -> 100)</label>
-            <input type="number" class="form-control" id="porcentaje-impuesto" name="porcentaje-impuesto" required value="{{producto.porcentaje_impuesto}}">
+            <input type="number" class="form-control" id="porcentaje-impuesto" name="porcentaje-impuesto" required
+                   value="{{producto.porcentaje_impuesto}}">
         </div>
         <div class="form-group">
             <label for="redondeo">Factor de redondeo</label>
-            <input type="number" class="form-control" id="redondeo" name="redondeo" required value="{{producto.redondeo}}">
+            <input type="number" class="form-control" id="redondeo" name="redondeo" required
+                   value="{{producto.redondeo}}">
         </div>
         <div class="form-group mt-2">
             <label for="redondeo">Modo de cálculo de utilidad</label>

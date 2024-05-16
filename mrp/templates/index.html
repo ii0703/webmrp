@@ -3,79 +3,60 @@
 {% block title %}Inicio{% endblock %}
 
 {% block content %}
-    <div class="container-sm text-center">
-        <h1 class="display-2">MRP II0703</h1>
-        <h2 class="display-5">Planificación de los requerimientos de material</h2>
+<div class="container-sm text-center">
+    <h1 class="display-2">MRP II0703</h1>
+    <h2 class="display-5">Planificación de los requerimientos de material</h2>
 
-        <p class="lead display-7">Ingeniería de Operaciones</p>
+    <p class="lead display-7">Ingeniería de Operaciones</p>
 
-        <hr class="my-4">
-        {% if g.user %}
-        <div class="container-sm">
-            <div class="row">
-                <div class="col">
-                    <a href="{{url_for('categoria_producto.index')}}" class="btn btn-primary">Categoría de productos</a>
-                </div>
-                <div class="col">
-                    <a href="{{url_for('producto.index')}}" class="btn btn-primary">Productos</a>
-                </div>
-                <div class="col">
-                    <a href="{{url_for('tipo_unidad.index')}}" class="btn btn-primary">Tipos de unidades</a>
-                </div>
-                <div class="col">
-                    <a href="{{url_for('unidad.index')}}" class="btn btn-primary">Unidades</a>
-                </div>
-                <div class="col">
-                    <a href="#" class="btn btn-primary">Opción 1</a>
-                </div>
-                <div class="col">
-                    <a href="#" class="btn btn-primary">Opción 1</a>
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col">
-                    <a href="#" class="btn btn-primary">Opción 1</a>
-                </div>
-                <div class="col">
-                    <a href="#" class="btn btn-primary">Opción 1</a>
-                </div>
-                <div class="col">
-                    <a href="#" class="btn btn-primary">Opción 1</a>
-                </div>
-                <div class="col">
-                    <a href="#" class="btn btn-primary">Opción 1</a>
-                </div>
-                <div class="col">
-                    <a href="#" class="btn btn-primary">Opción 1</a>
-                </div>
-                <div class="col">
-                    <a href="#" class="btn btn-primary">Opción 1</a>
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col">
-                    <a href="#" class="btn btn-primary">Opción 1</a>
-                </div>
-                <div class="col">
-                    <a href="#" class="btn btn-primary">Opción 1</a>
-                </div>
-                <div class="col">
-                    <a href="#" class="btn btn-primary">Opción 1</a>
-                </div>
-                <div class="col">
-                    <a href="#" class="btn btn-primary">Opción 1</a>
-                </div>
-                <div class="col">
-                    <a href="#" class="btn btn-primary">Opción 1</a>
-                </div>
-                <div class="col">
-                    <a href="#" class="btn btn-primary">Opción 1</a>
-                </div>
+    <hr class="my-4">
+    {% if g.user %}
+    <div class="container-sm">
+        <div class="row">
+            <div class="col">
+                <h3>Unidades</h3>
             </div>
         </div>
-        {% else %}
-        <p class="lead text-bg-danger text-black">Debe ingresar para ver opciones</p>
-        {% endif %}
+        <div class="row">
+            <div class="col">
+                <a href="{{url_for('tipo_unidad.index')}}"
+                   class="btn btn-primary btn-box">
+                    Tipos de unidades
+                </a>
+            </div>
+            <div class="col">
+                <a href="{{url_for('unidad.index')}}"
+                   class="btn btn-primary btn-box">
+                    Unidades
+                </a>
+            </div>
 
+        </div>
+        <div class="row">
+            <div class="col">
+                <h3>Productos</h3>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col">
+                <a href="{{url_for('categoria_producto.index')}}"
+                   class="btn btn-info btn-block btn-box">
+                    Categoría de productos
+                </a>
+            </div>
+            <div class="col">
+                <a href="{{url_for('producto.index')}}"
+                   class="btn btn-primary btn-block btn-box">
+                    Productos
+                </a>
+            </div>
+
+        </div>
     </div>
+    {% else %}
+    <p class="lead text-bg-danger text-black">Debe ingresar para ver opciones</p>
+    {% endif %}
+
+</div>
 {% endblock %}
