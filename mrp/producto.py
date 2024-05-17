@@ -1,8 +1,8 @@
-from flask import Blueprint, render_template, request, redirect, url_for, g
+from flask import Blueprint, render_template, request, redirect, url_for, g, abort
 from mrp.auth import login_required
 from .models import Producto, CategoriaProducto, Unidad
 from mrp import db
-
+from sqlite3 import IntegrityError
 
 bp = Blueprint('producto', __name__, url_prefix='/producto')
 
@@ -71,7 +71,22 @@ def create():
                             )
 
         db.session.add(producto)
-        db.session.commit()
+
+        # db.session.commit()
+
+        try:
+            db.session.commit()
+        except AssertionError as err:
+            db.session.rollback()
+            abort(409, err)
+        except IntegrityError as err:
+            db.session.rollback()
+            abort(409, err.orig)
+        except Exception as err:
+            db.session.rollback()
+            abort(500, err)
+        finally:
+            db.session.close()
 
         return redirect(url_for('producto.index'))
 

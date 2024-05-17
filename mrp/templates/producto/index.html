@@ -5,7 +5,8 @@
 <section class="container-fluid">
     <nav class="navbar">
         <h1>{% block title %}Lista de Producto{% endblock %}</h1>
-        <a href="{{url_for('producto.create')}}" class="btn btn-success">Nuevo</a>
+        <a href="{{url_for('producto.create')}}"
+           class="btn btn-success">Nuevo</a>
     </nav>
 
     <table class="table">
@@ -20,16 +21,18 @@
         {% for dato in datos | reverse %}
         <tr>
             <td>
-                <a href="{{url_for('producto.view', id = dato.id)}}" >{{dato.sku}}</a>
-<!--                <h5>{{dato.sku}}</h5>-->
+                <a href="{{url_for('producto.view', id = dato.id)}}"
+                class="btn btn-light btn-sm d-block my-1">
+                    {{dato.sku}}</a>
             </td>
             <td>
                 <p>{{dato.nombre}}</p>
             </td>
             <td>
-                <a href="{{url_for('producto.update', id = dato.id)}}" class="btn btn-info btn-sm">Editar</a>
-                <br>
-                <a href="{{url_for('producto.delete', id = dato.id)}}" class="btn btn-danger btn-sm">Eliminar</a>
+                <a href="{{url_for('producto.update', id = dato.id)}}"
+                   class="btn btn-info btn-sm d-block my-1">Editar</a>
+                <a href="{{url_for('producto.delete', id = dato.id)}}"
+                   class="btn btn-danger btn-sm d-block my-1">Eliminar</a>
             </td>
         </tr>
         {% endfor %}

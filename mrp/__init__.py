@@ -3,6 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+def page_not_found(e):
+  return render_template('error/404.html'), 404
+
 def create_app():
     app = Flask(__name__)
 
@@ -12,6 +15,8 @@ def create_app():
         SQLALCHEMY_DATABASE_URI = 'sqlite:///productos.db'
     )
     db.init_app(app)
+
+    app.register_error_handler(404, page_not_found)
 
     from . import auth
     app.register_blueprint(auth.bp)
