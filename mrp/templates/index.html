@@ -12,28 +12,6 @@
     <hr class="my-4">
     {% if g.user %}
     <div class="accordion border-bottom-0">
-        <details class="accordion-item border-bottom-0">
-            <summary class="accordion-button rounded-top">
-                <div class="accordion-header user-select-none"><h3>Unidades</h3></div>
-            </summary>
-            <div class="accordion-body border-bottom">
-                <div class="row">
-                    <div class="col-6">
-                        <a href="{{url_for('tipo_unidad.index')}}"
-                           class="btn btn-primary d-block">
-                            Tipos de unidades
-                        </a>
-                    </div>
-                    <div class="col-6">
-                        <a href="{{url_for('unidad.index')}}"
-                           class="btn btn-primary d-block">
-                            Unidades
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </details>
-
 
         <details class="accordion-item border-bottom-0">
             <summary class="accordion-button rounded-top">
@@ -81,11 +59,25 @@
                 <div class="accordion-header user-select-none"><h3>Catálogos generales</h3></div>
             </summary>
             <div class="accordion-body border-bottom">
-                <div class="row">
+                <div class="row my-2">
                     <div class="col-6">
                         <a href="{{url_for('lugar.index')}}"
                            class="btn btn-primary btn-block d-block">
                             Lugares
+                        </a>
+                    </div>
+                </div>
+                <div class="row my-2">
+                    <div class="col-6">
+                        <a href="{{url_for('tipo_unidad.index')}}"
+                           class="btn btn-primary d-block">
+                            Tipos de unidades
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="{{url_for('unidad.index')}}"
+                           class="btn btn-primary d-block">
+                            Unidades
                         </a>
                     </div>
                 </div>

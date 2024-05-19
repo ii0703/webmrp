@@ -35,9 +35,11 @@ def create():
                       )
 
         db.session.add(lugar)
-
+        id:int = -1
         try:
             db.session.commit()
+            id = lugar.id
+            print(id)
         except AssertionError as err:
             db.session.rollback()
             abort(409, err)
@@ -50,7 +52,7 @@ def create():
         finally:
             db.session.close()
 
-        return redirect(url_for('lugar.index'))
+        return redirect(url_for('lugar.view',id=id))
 
     return render_template('lugar/create.html')
 
@@ -66,6 +68,8 @@ def update(id):
 
         lugar.esta_activo = request.form.get('esta-activo') == 'on'
 
+        id:int = lugar.id
+
         try:
             db.session.commit()
         except AssertionError as err:
@@ -80,7 +84,7 @@ def update(id):
         finally:
             db.session.close()
 
-        return redirect(url_for('lugar.index'))
+        return redirect(url_for('lugar.view',id=id))
 
     return render_template('lugar/update.html', dato=lugar)
 
@@ -114,4 +118,4 @@ def delete(id):
             db.session.close()
         return redirect(url_for('lugar.index'))
 
-    return render_template('lugar/delete.html', lugar=lugar)
+    return render_template('lugar/delete.html', dato=lugar)

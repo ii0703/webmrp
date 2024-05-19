@@ -4,12 +4,13 @@
 
 <section class="container-sm">
     <h3 class="text-center mt-3 mb-3">{% block title %}Eliminar Producto{% endblock %}</h3>
-    <h4 class="text-center mt-4 mb-4">¿Desea eliminar {{ producto.nombre }} ?</h4>
+    <h4 class="text-center mt-4 mb-4">¿Desea eliminar {{ dato.nombre }} ?</h4>
     <form action="" method="post">
 
         <div class="text-center">
             <div class="d-grid gap-2 col-6 mx-auto">
-            <input type="submit" class="btn btn-primary btn-danger" value="Si, eliminar {{ producto.nombre }}">
+            <input type="submit" class="btn btn-primary btn-danger"
+                   value="Si, eliminar {{ producto.nombre }}">
             <a href="{{ url_for('producto.index')}}" class="btn btn-secondary">Conservar {{ producto.nombre }}</a>
             </div>
         </div>

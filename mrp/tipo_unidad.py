@@ -1,13 +1,16 @@
-from flask import Blueprint, render_template, request, redirect, url_for, g
+from flask import Blueprint, render_template, request, redirect, url_for, g, abort
+from mrp.auth import login_required
 from .models import TipoUnidad
 from mrp import db
-from mrp.auth import login_required
+from sqlite3 import IntegrityError
 
-bp = Blueprint('tipo_unidad', __name__, url_prefix='/tipo-unidad')
+bp = Blueprint('tipo_unidad', __name__, url_prefix='/tipo_unidad')
+
 
 def get(id):
     dato = TipoUnidad.query.get_or_404(id)
     return dato
+
 
 @bp.route('/list')
 @login_required
@@ -22,16 +25,34 @@ def index():
 @login_required
 def create():
     if request.method == 'POST':
-        codigo = request.form['codigo']
-        nombre = request.form['nombre']
-        esta_activo = request.form.get('esta_activo') == 'on'
+        codigo: str = request.form['codigo']
+        nombre: str = request.form['nombre']
+        esta_activo: bool = request.form.get('esta-activo', '') == 'on'
 
-        tipo_unidad = TipoUnidad(codigo=codigo, nombre=nombre, esta_activo=esta_activo)
+        tipo_unidad = TipoUnidad(codigo=codigo,
+                      nombre=nombre,
+                      esta_activo=esta_activo
+                      )
 
         db.session.add(tipo_unidad)
-        db.session.commit()
+        id:int = -1
+        try:
+            db.session.commit()
+            id = tipo_unidad.id
+            print(id)
+        except AssertionError as err:
+            db.session.rollback()
+            abort(409, err)
+        except IntegrityError as err:
+            db.session.rollback()
+            abort(409, err.orig)
+        except Exception as err:
+            db.session.rollback()
+            abort(500, err)
+        finally:
+            db.session.close()
 
-        return redirect(url_for('tipo_unidad.index'))
+        return redirect(url_for('tipo_unidad.view',id=id))
 
     return render_template('tipo_unidad/create.html')
 
@@ -44,18 +65,57 @@ def update(id):
     if request.method == 'POST':
         tipo_unidad.codigo = request.form['codigo']
         tipo_unidad.nombre = request.form['nombre']
-        tipo_unidad.esta_activo = request.form.get('esta_activo') == 'on'
 
-        db.session.commit()
+        tipo_unidad.esta_activo = request.form.get('esta-activo') == 'on'
 
-        return redirect(url_for('tipo_unidad.index'))
+        id:int = tipo_unidad.id
 
-    return render_template('tipo_unidad/update.html', tipo_unidad = tipo_unidad)
+        try:
+            db.session.commit()
+        except AssertionError as err:
+            db.session.rollback()
+            abort(409, err)
+        except IntegrityError as err:
+            db.session.rollback()
+            abort(409, err.orig)
+        except Exception as err:
+            db.session.rollback()
+            abort(500, err)
+        finally:
+            db.session.close()
 
-@bp.route('/delete/<int:id>')
+        return redirect(url_for('tipo_unidad.view',id=id))
+
+    return render_template('tipo_unidad/update.html', dato=tipo_unidad)
+
+
+@bp.route('/view/<int:id>')
 @login_required
+def view(id):
+    tipo_unidad = get(id)
+    return render_template('tipo_unidad/view.html', dato=tipo_unidad)
+
+
+@bp.route('/delete/<int:id>', methods=['GET', 'POST'])
 def delete(id):
     tipo_unidad = get(id)
-    db.session.delete(tipo_unidad)
-    db.session.commit()
-    return redirect(url_for('tipo_unidad.index'))
+
+    if request.method == 'POST':
+        tipo_unidad = get(id)
+        db.session.delete(tipo_unidad)
+        try:
+            db.session.commit()
+        except AssertionError as err:
+            db.session.rollback()
+            abort(409, err)
+        except IntegrityError as err:
+            db.session.rollback()
+            abort(409, err.orig)
+        except Exception as err:
+            db.session.rollback()
+            abort(500, err)
+        finally:
+            db.session.close()
+        return redirect(url_for('tipo_unidad.index'))
+
+    return render_template('tipo_unidad/delete.html', dato=tipo_unidad)
