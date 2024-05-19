@@ -35,6 +35,28 @@
                         {%endif%}
                     </dd>
                 </div>
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Categoría
+                    </dt>
+                    <dd class="col-sm-7">
+                        <a class="btn btn-light d-block my-1"
+                           href="{{url_for('categoria_producto.view', id = dato.categoria_producto.id)}}">
+                            {{dato.categoria_producto.nombre}}
+                        </a>
+                    </dd>
+                </div>
+
+                <!--
+                                <div class="row">
+                                    <dt class="col-sm-5">
+
+                                    </dt>
+                                    <dd class="col-sm-7">
+
+                                    </dd>
+                                </div>
+                -->
             </dl>
             <!--      <img src="producto.jpg" class="img-fluid" alt="Producto">-->
         </div>
@@ -53,17 +75,20 @@
             </div>
         </div>
     </div>
-    <!--    <div class="row mt-4">-->
-    <!--        <div class="col">-->
-    <!--            <h3>Detalles del Producto</h3>-->
-    <!--            <ul class="list-group">-->
-    <!--                <li class="list-group-item"><strong>Material:</strong> Plástico</li>-->
-    <!--                <li class="list-group-item"><strong>Dimensiones:</strong> 10cm x 5cm x 3cm</li>-->
-    <!--                <li class="list-group-item"><strong>Peso:</strong> 200g</li>-->
-    <!--                <li class="list-group-item"><strong>Color:</strong> Negro</li>-->
-    <!--            </ul>-->
-    <!--        </div>-->
-    <!--    </div>-->
+    <div class="row mt-4">
+        <div class="col">
+            <h3>Detalle extendido</h3>
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Cantidad:</strong> {{dato.cantidad_total}}(total) /
+                    {{dato.cantidad_disponible}}(disponible) / {{dato.cantidad_reservado}}(reservado) en
+                    {{dato.unidad.nombre}}
+                </li>
+                <li class="list-group-item"><strong>Costo:</strong> {{dato.costo}}</li>
+                <li class="list-group-item"><strong>Redondeo del precio:</strong> Múltiplos de {{dato.redondeo}}</li>
+                <li class="list-group-item"><strong>Fecha registro:</strong> {{dato.fecha_registro}}</li>
+            </ul>
+        </div>
+    </div>
     <div class="row my-2">
         <div class="col text-center">
             <a class="btn btn-secondary"
