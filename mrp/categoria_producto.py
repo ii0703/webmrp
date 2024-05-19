@@ -1,13 +1,16 @@
-from flask import Blueprint, render_template, request, redirect, url_for, g
+from flask import Blueprint, render_template, request, redirect, url_for, g, abort
+from mrp.auth import login_required
 from .models import CategoriaProducto
 from mrp import db
-from mrp.auth import login_required
+from sqlite3 import IntegrityError
 
-bp = Blueprint('categoria_producto', __name__, url_prefix='/categoria-producto')
+bp = Blueprint('categoria_producto', __name__, url_prefix='/categoria_producto')
+
 
 def get(id):
     dato = CategoriaProducto.query.get_or_404(id)
     return dato
+
 
 @bp.route('/list')
 @login_required
@@ -22,16 +25,34 @@ def index():
 @login_required
 def create():
     if request.method == 'POST':
-        codigo = request.form['codigo']
-        nombre = request.form['nombre']
-        esta_activo = request.form.get('esta_activo') == 'on'
+        codigo: str = request.form['codigo']
+        nombre: str = request.form['nombre']
+        esta_activo: bool = request.form.get('esta-activo', '') == 'on'
 
-        categoria_producto = CategoriaProducto(codigo=codigo, nombre=nombre, esta_activo=esta_activo)
+        categoria_producto = CategoriaProducto(codigo=codigo,
+                      nombre=nombre,
+                      esta_activo=esta_activo
+                      )
 
         db.session.add(categoria_producto)
-        db.session.commit()
+        id:int = -1
+        try:
+            db.session.commit()
+            id = categoria_producto.id
+            print(id)
+        except AssertionError as err:
+            db.session.rollback()
+            abort(409, err)
+        except IntegrityError as err:
+            db.session.rollback()
+            abort(409, err.orig)
+        except Exception as err:
+            db.session.rollback()
+            abort(500, err)
+        finally:
+            db.session.close()
 
-        return redirect(url_for('categoria_producto.index'))
+        return redirect(url_for('categoria_producto.view',id=id))
 
     return render_template('categoria_producto/create.html')
 
@@ -44,18 +65,57 @@ def update(id):
     if request.method == 'POST':
         categoria_producto.codigo = request.form['codigo']
         categoria_producto.nombre = request.form['nombre']
-        categoria_producto.esta_activo = request.form.get('esta_activo') == 'on'
 
-        db.session.commit()
+        categoria_producto.esta_activo = request.form.get('esta-activo') == 'on'
 
-        return redirect(url_for('categoria_producto.index'))
+        id:int = categoria_producto.id
 
-    return render_template('categoria_producto/update.html', categoria_producto = categoria_producto)
+        try:
+            db.session.commit()
+        except AssertionError as err:
+            db.session.rollback()
+            abort(409, err)
+        except IntegrityError as err:
+            db.session.rollback()
+            abort(409, err.orig)
+        except Exception as err:
+            db.session.rollback()
+            abort(500, err)
+        finally:
+            db.session.close()
 
-@bp.route('/delete/<int:id>')
+        return redirect(url_for('categoria_producto.view',id=id))
+
+    return render_template('categoria_producto/update.html', dato=categoria_producto)
+
+
+@bp.route('/view/<int:id>')
 @login_required
+def view(id):
+    categoria_producto = get(id)
+    return render_template('categoria_producto/view.html', dato=categoria_producto)
+
+
+@bp.route('/delete/<int:id>', methods=['GET', 'POST'])
 def delete(id):
     categoria_producto = get(id)
-    db.session.delete(categoria_producto)
-    db.session.commit()
-    return redirect(url_for('categoria_producto.index'))
+
+    if request.method == 'POST':
+        categoria_producto = get(id)
+        db.session.delete(categoria_producto)
+        try:
+            db.session.commit()
+        except AssertionError as err:
+            db.session.rollback()
+            abort(409, err)
+        except IntegrityError as err:
+            db.session.rollback()
+            abort(409, err.orig)
+        except Exception as err:
+            db.session.rollback()
+            abort(500, err)
+        finally:
+            db.session.close()
+        return redirect(url_for('categoria_producto.index'))
+
+    return render_template('categoria_producto/delete.html', dato=categoria_producto)
