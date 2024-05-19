@@ -5,7 +5,8 @@
 <section class="container-fluid">
     <nav class="navbar">
         <h1>{% block title %}Lista de Unidades{% endblock %}</h1>
-        <a href="{{url_for('unidad.create')}}" class="btn btn-success">Nuevo</a>
+        <a href="{{url_for('unidad.create')}}"
+           class="btn btn-success">Nuevo</a>
     </nav>
 
     <table class="table">
@@ -13,24 +14,26 @@
         <tr>
             <th class="col">Símbolo</th>
             <th class="col">Nombre</th>
-            <th class="col" colspan="2">Opciones</th>
+            <th class="col">Estado</th>
         </tr>
         </thead>
         <tbody>
         {% for dato in datos | reverse %}
         <tr>
             <td>
-                <h5>{{dato.simbolo}}</h5>
+                <a href="{{url_for('unidad.view', id = dato.id)}}"
+                class="btn btn-light btn-sm d-block my-1">
+                    {{dato.simbolo}}</a>
             </td>
             <td>
-                <p>{{dato.nombre}}</p>
+                {{dato.nombre}}
             </td>
             <td>
-                <a href="{{url_for('unidad.update', id = dato.id)}}"
-                   class="btn btn-info btn-sm mt-1">Editar</a>
-                <br>
-                <a href="{{url_for('unidad.delete', id = dato.id)}}"
-                   class="btn btn-danger btn-sm mt-1">Eliminar</a>
+                {%if dato.esta_activo %}
+                <span class="text-success">Activo</span>
+                {%else%}
+                <span class="text-danger">Inactivo</span>
+                {%endif%}
             </td>
         </tr>
         {% endfor %}
