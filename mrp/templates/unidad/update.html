@@ -13,7 +13,7 @@
                 <select class="form-select form-select-sm mb-3"
                         id="tipo-unidad" name="tipo-unidad">
                     {%for tipo in tipos%}
-                    <option value="{{tipo.id}}" {%if dato.tipo_unidad_id == tipo.id%} {%endif%}> {{tipo.nombre}}
+                    <option value="{{tipo.id}}" {%if dato.tipo_unidad_id == tipo.id%} selected {%endif%}> {{tipo.nombre}}
                     </option>
                     {%endfor%}
                 </select>
