@@ -143,17 +143,21 @@ def update(id):
                            unidades=unidades)
 
 
-@bp.route('/delete/<int:id>')
-@login_required
-def delete(id):
-    producto = get(id)
-    db.session.delete(producto)
-    db.session.commit()
-    return redirect(url_for('producto.index'))
-
-
 @bp.route('/view/<int:id>')
 @login_required
 def view(id):
     producto = get(id)
     return render_template('producto/view.html', producto=producto)
+
+
+@bp.route('/delete/<int:id>', methods=['GET', 'POST'])
+def delete(id):
+    producto = get(id)
+
+    if request.method == 'POST':
+        producto = get(id)
+        db.session.delete(producto)
+        db.session.commit()
+        return redirect(url_for('producto.index'))
+
+    return render_template('producto/delete.html', producto=producto)
