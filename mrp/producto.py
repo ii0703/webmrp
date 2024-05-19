@@ -71,11 +71,12 @@ def create():
                             )
 
         db.session.add(producto)
-
+        id: int = -1
         # db.session.commit()
 
         try:
             db.session.commit()
+            id = producto.id
         except AssertionError as err:
             db.session.rollback()
             abort(409, err)
@@ -88,7 +89,7 @@ def create():
         finally:
             db.session.close()
 
-        return redirect(url_for('producto.index'))
+        return redirect(url_for('producto.view',id=id))
 
     return render_template('producto/create.html', categorias_producto=categorias_producto, unidades=unidades)
 
@@ -117,6 +118,9 @@ def update(id):
         utilidad_monto = 0
         utilidad_porcentaje = 0
         utilildad_es_porcentaje = True
+
+        id: int = producto.id
+
         if modo_utilidad == 'porcentaje':
             utilidad_porcentaje = request.form['utilidad-porcentaje']
             utilildad_es_porcentaje = True
@@ -137,9 +141,9 @@ def update(id):
 
         db.session.commit()
 
-        return redirect(url_for('producto.index'))
+        return redirect(url_for('producto.view',id=id))
 
-    return render_template('producto/update.html', producto=producto, categorias_producto=categorias_producto,
+    return render_template('producto/update.html', dato=producto, categorias_producto=categorias_producto,
                            unidades=unidades)
 
 
@@ -147,7 +151,7 @@ def update(id):
 @login_required
 def view(id):
     producto = get(id)
-    return render_template('producto/view.html', producto=producto)
+    return render_template('producto/view.html', dato=producto)
 
 
 @bp.route('/delete/<int:id>', methods=['GET', 'POST'])
@@ -160,4 +164,4 @@ def delete(id):
         db.session.commit()
         return redirect(url_for('producto.index'))
 
-    return render_template('producto/delete.html', producto=producto)
+    return render_template('producto/delete.html', dato=producto)

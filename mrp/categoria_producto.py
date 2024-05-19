@@ -39,7 +39,6 @@ def create():
         try:
             db.session.commit()
             id = categoria_producto.id
-            print(id)
         except AssertionError as err:
             db.session.rollback()
             abort(409, err)
