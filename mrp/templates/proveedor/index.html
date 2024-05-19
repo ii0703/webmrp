@@ -4,27 +4,36 @@
 {% block content %}
 <section class="container-fluid">
     <nav class="navbar">
-        <h1>{% block title %}Lista de Producto{% endblock %}</h1>
-        <a href="{{url_for('producto.create')}}" class="btn btn-success">Nuevo</a>
+        <h1>{% block title %}Lista de Proveedores{% endblock %}</h1>
+        <a href="{{url_for('proveedor.create')}}"
+           class="btn btn-success">Nuevo</a>
     </nav>
 
     <table class="table">
         <thead>
         <tr>
-            <th class="col">Código</th>
+            <th class="col">SKU</th>
             <th class="col">Nombre</th>
-            <th class="col" colspan="2">Opciones</th>
+            <th class="col">Opciones</th>
         </tr>
         </thead>
         <tbody>
         {% for dato in datos | reverse %}
         <tr>
             <td>
-                <h5>{{dato.codigo}}</h5>
+                <a href="{{url_for('producto.view', id = dato.id)}}"
+                class="btn btn-light btn-sm d-block my-1">
+                    {{dato.sku}}</a>
+            </td>
+            <td>
                 <p>{{dato.nombre}}</p>
             </td>
-            <td><a href="{{url_for('producto.update', id = dato.id)}}" class="btn btn-info btn-sm">Editar</a></td>
-            <td><a href="{{url_for('producto.delete', id = dato.id)}}" class="btn btn-danger btn-sm">Eliminar</a></td>
+            <td>
+                <a href="{{url_for('producto.update', id = dato.id)}}"
+                   class="btn btn-info btn-sm d-block my-1">Editar</a>
+                <a href="{{url_for('producto.delete', id = dato.id)}}"
+                   class="btn btn-danger btn-sm d-block my-1">Eliminar</a>
+            </td>
         </tr>
         {% endfor %}
         </tbody>

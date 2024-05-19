@@ -33,6 +33,12 @@ def create_app():
     from . import producto
     app.register_blueprint(producto.bp)
 
+    from . import proveedor
+    app.register_blueprint(proveedor.bp)
+
+    from . import lugar
+    app.register_blueprint(lugar.bp)
+
     @app.route('/')
     def index():
         return render_template('index.html')
