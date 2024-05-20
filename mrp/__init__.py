@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, session, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
+from flask_session import Session
 
 db = SQLAlchemy()
 
@@ -12,9 +13,12 @@ def create_app():
     app.config.from_mapping(
         DEBUG=True,
         SECRET_KEY='8fdf56a9-340e-4850-a60d-f6015b459efb',
-        SQLALCHEMY_DATABASE_URI = 'sqlite:///productos.db'
+        SQLALCHEMY_DATABASE_URI = 'sqlite:///mrp0703.db',
+        SESSION_PERMANENT=False,
+        SESSION_TYPE='filesystem'
     )
     db.init_app(app)
+    Session(app)
 
     app.register_error_handler(404, page_not_found)
 
