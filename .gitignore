@@ -160,4 +160,6 @@ cython_debug/
 .idea/
 
 # flask-session
+/flask_session/*
 flask_session/*
+flask_session/
