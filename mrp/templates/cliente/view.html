@@ -23,6 +23,42 @@
                         {{dato.nombre}}
                     </dd>
                 </div>
+
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Correo Electrónico
+                    </dt>
+                    <dd class="col-sm-7">
+                        <a href= "mailto:{{dato.correo_electronico}}">
+                            {{dato.correo_electronico}}
+                        </a>
+                    </dd>
+                </div>
+
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Teléfono
+                    </dt>
+                    <dd class="col-sm-7">
+                        <a href="tel:{{dato.telefono}}">
+                            {{dato.telefono}}
+                        </a>
+                    </dd>
+                </div>
+
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Tipo
+                    </dt>
+                    <dd class="col-sm-7">
+                        {%if dato.es_persona_fisica %}
+                        <span class="text-success">Persona física</span>
+                        {%else%}
+                        <span class="text-info">Empresa</span>
+                        {%endif%}
+                    </dd>
+                </div>
+
                 <div class="row">
                     <dt class="col-sm-5">
                         Estado
