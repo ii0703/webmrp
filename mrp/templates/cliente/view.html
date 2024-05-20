@@ -9,10 +9,10 @@
             <dl>
                 <div class="row">
                     <dt class="col-sm-5">
-                        Símbolo
+                        SKU
                     </dt>
                     <dd class="col-sm-7">
-                        {{dato.simbolo}}
+                        {{dato.SKU}}
                     </dd>
                 </div>
                 <div class="row">
@@ -41,11 +41,22 @@
                     </dt>
                     <dd class="col-sm-7">
                         <a class="btn btn-light d-block my-1"
-                           href="{{url_for('tipo_unidad.view', id = dato.tipo_unidad.id)}}">
-                            {{dato.tipo_unidad.nombre}}
+                           href="{{url_for('categoria_producto.view', id = dato.categoria_producto.id)}}">
+                            {{dato.categoria_producto.nombre}}
                         </a>
                     </dd>
                 </div>
+
+                <!--
+                                <div class="row">
+                                    <dt class="col-sm-5">
+
+                                    </dt>
+                                    <dd class="col-sm-7">
+
+                                    </dd>
+                                </div>
+                -->
             </dl>
             <!--      <img src="producto.jpg" class="img-fluid" alt="Producto">-->
         </div>
@@ -53,32 +64,35 @@
             <div class="row">
                 <div class="col">
                     <a class="btn btn-info d-block my-1"
-                       href="{{url_for('unidad.update', id = dato.id)}}">Editar</a>
+                       href="{{url_for('producto.update', id = dato.id)}}">Editar</a>
                 </div>
             </div>
             <div class="row">
                 <div class="col">
                     <a class="btn btn-danger d-block my-1"
-                       href="{{url_for('unidad.delete', id = dato.id)}}">Eliminar</a>
+                       href="{{url_for('producto.delete', id = dato.id)}}">Eliminar</a>
                 </div>
             </div>
         </div>
     </div>
-    <!--    <div class="row mt-4">-->
-    <!--        <div class="col">-->
-    <!--            <h3>Detalles del Producto</h3>-->
-    <!--            <ul class="list-group">-->
-    <!--                <li class="list-group-item"><strong>Material:</strong> Plástico</li>-->
-    <!--                <li class="list-group-item"><strong>Dimensiones:</strong> 10cm x 5cm x 3cm</li>-->
-    <!--                <li class="list-group-item"><strong>Peso:</strong> 200g</li>-->
-    <!--                <li class="list-group-item"><strong>Color:</strong> Negro</li>-->
-    <!--            </ul>-->
-    <!--        </div>-->
-    <!--    </div>-->
+    <div class="row mt-4">
+        <div class="col">
+            <h3>Detalle extendido</h3>
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Cantidad:</strong> {{dato.cantidad_total}}(total) /
+                    {{dato.cantidad_disponible}}(disponible) / {{dato.cantidad_reservado}}(reservado) en
+                    {{dato.unidad.nombre}}
+                </li>
+                <li class="list-group-item"><strong>Costo:</strong> {{dato.costo}}</li>
+                <li class="list-group-item"><strong>Redondeo del precio:</strong> Múltiplos de {{dato.redondeo}}</li>
+                <li class="list-group-item"><strong>Fecha registro:</strong> {{dato.fecha_registro}}</li>
+            </ul>
+        </div>
+    </div>
     <div class="row my-2">
         <div class="col text-center">
             <a class="btn btn-secondary"
-               href="{{ url_for('unidad.index')}}">
+               href="{{ url_for('producto.index')}}">
                 Regresar al listado
             </a>
         </div>

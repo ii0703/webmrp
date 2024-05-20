@@ -42,6 +42,9 @@ def create_app():
     from . import bodega
     app.register_blueprint(bodega.bp)
 
+    from . import cliente
+    app.register_blueprint(cliente.bp)
+
     @app.route('/')
     def index():
         return render_template('index.html')
