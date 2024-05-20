@@ -9,10 +9,10 @@
             <dl>
                 <div class="row">
                     <dt class="col-sm-5">
-                        SKU
+                        Identificación
                     </dt>
                     <dd class="col-sm-7">
-                        {{dato.SKU}}
+                        {{dato.identificacion}}
                     </dd>
                 </div>
                 <div class="row">
@@ -37,12 +37,12 @@
                 </div>
                 <div class="row">
                     <dt class="col-sm-5">
-                        Categoría
+                        Lugar
                     </dt>
                     <dd class="col-sm-7">
                         <a class="btn btn-light d-block my-1"
-                           href="{{url_for('categoria_producto.view', id = dato.categoria_producto.id)}}">
-                            {{dato.categoria_producto.nombre}}
+                           href="{{url_for('lugar.view', id = dato.lugar.id)}}">
+                            {{dato.lugar.nombre}}
                         </a>
                     </dd>
                 </div>
@@ -64,35 +64,22 @@
             <div class="row">
                 <div class="col">
                     <a class="btn btn-info d-block my-1"
-                       href="{{url_for('producto.update', id = dato.id)}}">Editar</a>
+                       href="{{url_for('cliente.update', id = dato.id)}}">Editar</a>
                 </div>
             </div>
             <div class="row">
                 <div class="col">
                     <a class="btn btn-danger d-block my-1"
-                       href="{{url_for('producto.delete', id = dato.id)}}">Eliminar</a>
+                       href="{{url_for('cliente.delete', id = dato.id)}}">Eliminar</a>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row mt-4">
-        <div class="col">
-            <h3>Detalle extendido</h3>
-            <ul class="list-group">
-                <li class="list-group-item"><strong>Cantidad:</strong> {{dato.cantidad_total}}(total) /
-                    {{dato.cantidad_disponible}}(disponible) / {{dato.cantidad_reservado}}(reservado) en
-                    {{dato.unidad.nombre}}
-                </li>
-                <li class="list-group-item"><strong>Costo:</strong> {{dato.costo}}</li>
-                <li class="list-group-item"><strong>Redondeo del precio:</strong> Múltiplos de {{dato.redondeo}}</li>
-                <li class="list-group-item"><strong>Fecha registro:</strong> {{dato.fecha_registro}}</li>
-            </ul>
-        </div>
-    </div>
+
     <div class="row my-2">
         <div class="col text-center">
             <a class="btn btn-secondary"
-               href="{{ url_for('producto.index')}}">
+               href="{{ url_for('cliente.index')}}">
                 Regresar al listado
             </a>
         </div>

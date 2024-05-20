@@ -7,21 +7,24 @@
     <form action="" method="post" class="form-inline">
         <div class="form-group row my-2">
             <div class="col-3">
-                <label for="sku" class="col-3">Código</label>
+                <label for="identificacion" class="col-3">Identificación</label>
             </div>
             <div class="col-9">
-                <input type="text" class="form-control col-9" id="sku" name="sku" required maxlength="13">
+                <input type="text" class="form-control col-9"
+                       id="identificacion" name="identificacion"
+                       required maxlength="13">
             </div>
         </div>
 
         <div class="form-group row my-2">
             <div class="col-3">
-                <label for="categoria-producto">Categoría de producto</label>
+                <label for="categoria-producto">Lugar</label>
             </div>
             <div class="col-9">
-                <select class="form-select form-select-sm mb-3" id="categoria-producto" name="categoria-producto">
-                    {%for categoria_producto in categorias_producto%}
-                    <option value="{{categoria_producto.id}}"> {{categoria_producto.nombre}}
+                <select class="form-select form-select-sm mb-3"
+                        id="lugar" name="lugar">
+                    {%for lugar in lugares%}
+                    <option value="{{lugar.id}}"> {{lugar.nombre}}
                     </option>
                     {%endfor%}
                 </select>
@@ -39,100 +42,34 @@
 
         <div class="form-group row my-2">
             <div class="col-3">
-                <label for="unidad">Unidad</label>
+                <label for="correo-electronico">Correo Electrónico</label>
             </div>
             <div class="col-9">
-                <select class="form-select form-select-sm mb-3" id="unidad" name="unidad">
-                    {%for unidad in unidades%}
-                    <option value="{{unidad.id}}">
-                        {{unidad.nombre}}
-                    </option>
-                    {%endfor%}
-                </select>
+                <input type="email" class="form-control"
+                       id="correo-electronico" name="correo-electronico"
+                       required maxlength="100">
             </div>
         </div>
 
         <div class="form-group row my-2">
             <div class="col-3">
-                <label for="cantidad-total">Cantidad</label>
+                <label for="telefono">Teléfono</label>
             </div>
             <div class="col-9">
-                <input type="number" class="form-control" id="cantidad-total" name="cantidad-total" required>
-            </div>
-        </div>
-
-        <div class="form-group row my-2">
-            <div class="col-3">
-                <label for="costo">Costo</label>
-            </div>
-            <div class="col-9">
-                <input type="number" class="form-control" id="costo" name="costo" required>
-            </div>
-        </div>
-
-        <div class="form-group row my-2">
-            <div class="col-3">
-                <label for="porcentaje-impuesto">Porcentaje impuesto (100% -> 100)</label>
-            </div>
-            <div class="col-9">
-                <input type="number" class="form-control" id="porcentaje-impuesto" name="porcentaje-impuesto" required>
-            </div>
-        </div>
-
-        <div class="form-group row my-2">
-            <div class="col-3">
-                <label for="redondeo">Factor de redondeo</label>
-            </div>
-            <div class="col-9">
-                <input type="number" class="form-control" id="redondeo" name="redondeo" required>
-            </div>
-        </div>
-
-        <div class="form-group row my-2">
-            <div class="col-3">
-                <label for="redondeo">Modo de cálculo de utilidad</label>
-            </div>
-            <div class="col-9">
-                <div class="row">
-                    <div class="col">
-                        <input type="radio" class="btn-check"
-                               name="modo-utilidad"
-                               id="modo-utilidad-porcentaje-utilidad"
-                               autocomplete="off"
-                               value="porcentaje" checked>
-                        <label class="btn d-block" for="modo-utilidad-porcentaje-utilidad">Porcentaje utilidad</label>
-                    </div>
-                    <div class="col">
-                        <label for="utilidad-porcentaje">Porcentaje de utilidad (100% -> 100)</label>
-                    </div>
-                    <div class="col">
-
-                        <input type="number" class="form-control"
-                               id="utilidad-porcentaje" name="utilidad-porcentaje"
-                               required>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <input type="radio" class="btn-check"
-                               name="modo-utilidad"
-                               id="modo-utilidad-monto-utilidad"
-                               autocomplete="off"
-                               value="monto">
-                        <label class="btn  d-block"
-                               for="modo-utilidad-monto-utilidad">Monto utilidad</label>
-                    </div>
-                    <div class="col">
-                <label for="utilidad-monto">Monto de Utilidad</label>
-                    </div>
-                    <div class="col">
                 <input type="number" class="form-control"
-                       id="utilidad-monto" name="utilidad-monto"
-                       required>
-                    </div>
-                </div>
+                       id="telefono" name="telefono"
+                       required maxlength="100">
+            </div>
+        </div>
 
-
+        <div class="form-group row my-2">
+            <div class="col-3">
+            <label class="form-check-label" for="es-persona-fisica">Tipo</label>
+            </div>
+            <div class="col-9">
+            <input class="form-check-input" type="checkbox" role="switch"
+                   id="es-persona-fisica" name="es-persona-fisica">
+            <label class="form-check-label" for="es-persona-fisica">Es Persona Física</label>
             </div>
         </div>
 
@@ -147,11 +84,10 @@
             </div>
         </div>
 
-
         <div class="form-group row my-2">
             <div class="col text-center">
             <input type="submit" class="btn btn-primary" value="Guardar">
-            <a href="{{ url_for('producto.index')}}" class="btn btn-secondary">Cancelar</a>
+            <a href="{{ url_for('cliente.index')}}" class="btn btn-secondary">Cancelar</a>
             </div>
         </div>
     </form>

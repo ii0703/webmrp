@@ -4,15 +4,15 @@
 {% block content %}
 <section class="container-fluid">
     <nav class="navbar">
-        <h1>{% block title %}Lista de Productos{% endblock %}</h1>
-        <a href="{{url_for('producto.create')}}"
+        <h1>{% block title %}Lista de Clientes{% endblock %}</h1>
+        <a href="{{url_for('cliente.create')}}"
            class="btn btn-success">Nuevo</a>
     </nav>
 
     <table class="table">
         <thead>
         <tr>
-            <th class="col">SKU</th>
+            <th class="col">Identificación</th>
             <th class="col">Nombre</th>
             <th class="col">Estado</th>
         </tr>
@@ -21,9 +21,9 @@
         {% for dato in datos | reverse %}
         <tr>
             <td>
-                <a href="{{url_for('producto.view', id = dato.id)}}"
+                <a href="{{url_for('cliente.view', id = dato.id)}}"
                 class="btn btn-light btn-sm d-block my-1">
-                    {{dato.sku}}</a>
+                    {{dato.identificacion}}</a>
             </td>
             <td>
                 {{dato.nombre}}
@@ -41,7 +41,7 @@
     </table>
 
 
-{{macros.render_pagination(datos,'producto.index')}}
+{{macros.render_pagination(datos,'cliente.index')}}
 
 
 </section>

@@ -15,10 +15,10 @@
 
         <details class="accordion-item border-bottom-0">
             <summary class="accordion-button rounded-top">
-                <div class="accordion-header user-select-none"><h3>Productos</h3></div>
+                <div class="accordion-header user-select-none"><h3>Clientes y Productos</h3></div>
             </summary>
             <div class="accordion-body border-bottom">
-                <div class="row">
+                <div class="row my-2 h-100">
 
                     <div class="col-6">
                         <a href="{{url_for('categoria_producto.index')}}"
@@ -33,16 +33,30 @@
                         </a>
                     </div>
                 </div>
+                <div class="row my-2 h-100">
+                    <div class="col-6">
+                        <a href="{{url_for('cliente.index')}}"
+                           class="btn btn-primary d-block h-100">
+                            Clientes
+                        </a>
+                    </div>
+                    <div class="col-6">
+{#                        <a href="{{url_for('producto.index')}}"#}
+{#                           class="btn btn-primary d-block h-100">#}
+{#                            Productos#}
+{#                        </a>#}
+                    </div>
+                </div>
             </div>
         </details>
 
 
         <details class="accordion-item border-bottom-0">
             <summary class="accordion-button rounded-top">
-                <div class="accordion-header user-select-none"><h3>Proveedores</h3></div>
+                <div class="accordion-header user-select-none"><h3>Proveedores y Materias Primas</h3></div>
             </summary>
             <div class="accordion-body border-bottom">
-                <div class="row">
+                <div class="row my-2 h-100">
                     <div class="col-6">
                         <a href="{{url_for('proveedor.index')}}"
                            class="btn btn-primary btn-block d-block h-100">

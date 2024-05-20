@@ -25,47 +25,26 @@ def index():
 @login_required
 def create():
     lugares = (Lugar
-                           .query.filter_by(esta_activo=True)
-                           .order_by(Lugar.nombre).all())
+               .query.filter_by(esta_activo=True)
+               .order_by(Lugar.nombre).all())
 
     if request.method == 'POST':
-        sku = request.form['sku']
-        categoria_cliente_id = request.form['categoria-cliente']
+        identificacion = request.form['identificacion']
+        lugar_id = request.form['lugar']
         nombre = request.form['nombre']
-        unidad_id = request.form['unidad']
-        cantidad_total = request.form['cantidad-total']
-        costo = request.form['costo']
-        porcentaje_impuesto = request.form['porcentaje-impuesto']
-        redondeo = request.form['redondeo']
-        modo_utilidad = request.form['modo-utilidad']
-        utilidad_monto = 0
-        utilidad_porcentaje = 0
-        utilildad_es_porcentaje = True
-        if modo_utilidad == 'porcentaje':
-            utilidad_porcentaje = request.form['utilidad-porcentaje']
-            utilildad_es_porcentaje = True
-        else:
-            utilidad_porcentaje = 0
-        if utilidad_monto == 'monto':
-            utilidad_monto = request.form['utilidad-monto']
-            utilildad_es_porcentaje = False
-        else:
-            utilidad_porcentaje = 0
+        correo_electronico = request.form['correo-electronico']
+        telefono = request.form['telefono']
+        es_persona_fisica = request.form.get('es-persona-fisica') == 'on'
         esta_activo = request.form.get('esta-activo') == 'on'
 
-        cliente = Cliente(sku=sku,
-                            nombre=nombre,
-                            categoria_cliente_id=categoria_cliente_id,
-                            unidad_id=unidad_id,
-                            cantidad_total=cantidad_total,
-                            costo=costo,
-                            porcentaje_impuesto=porcentaje_impuesto,
-                            redondeo=redondeo,
-                            utilildad_es_porcentaje=utilildad_es_porcentaje,
-                            porcentaje_utilidad=utilidad_porcentaje,
-                            monto_utilidad=utilidad_monto,
-                            esta_activo=esta_activo
-                            )
+        cliente = Cliente(identificacion=identificacion,
+                          lugar_id=lugar_id,
+                          nombre=nombre,
+                          correo_electronico=correo_electronico,
+                          telefono = telefono,
+                          es_persona_fisica = es_persona_fisica,
+                          esta_activo=esta_activo
+                          )
 
         db.session.add(cliente)
         id: int = -1
@@ -86,7 +65,7 @@ def create():
         finally:
             db.session.close()
 
-        return redirect(url_for('cliente.view',id=id))
+        return redirect(url_for('cliente.view', id=id))
 
     return render_template('cliente/create.html', lugares=lugares)
 
@@ -96,46 +75,21 @@ def create():
 def update(id):
     cliente = get(id)
     lugares = (Lugar
-                           .query.filter_by(esta_activo=True)
-                           .order_by(Lugar.nombre).all())
+               .query.filter_by(esta_activo=True)
+               .order_by(Lugar.nombre).all())
 
     if request.method == 'POST':
-        cliente.sku = request.form['sku']
-        cliente.categoria_cliente_id = request.form['categoria-cliente']
+        cliente.identificacion = request.form['identificacion']
+        cliente.lugar_id = request.form['lugar']
         cliente.nombre = request.form['nombre']
-        cliente.unidad_id = request.form['unidad']
-        cliente.cantidad_total = request.form['cantidad-total']
-        cliente.costo = request.form['costo']
-        cliente.porcentaje_impuesto = request.form['porcentaje-impuesto']
-        cliente.redondeo = request.form['redondeo']
-        modo_utilidad = request.form['modo-utilidad']
-        utilidad_monto = 0
-        utilidad_porcentaje = 0
-        utilildad_es_porcentaje = True
-
-        id: int = cliente.id
-
-        if modo_utilidad == 'porcentaje':
-            utilidad_porcentaje = request.form['utilidad-porcentaje']
-            utilildad_es_porcentaje = True
-        else:
-            utilidad_porcentaje = 0
-
-        if utilidad_monto == 'monto':
-            utilidad_monto = request.form['utilidad-monto']
-            utilildad_es_porcentaje = False
-        else:
-            utilidad_porcentaje = 0
-
-        cliente.utilidad_porcentaje = utilidad_porcentaje
-        cliente.utilidad_monto = utilidad_monto
-        cliente.utilildad_es_porcentaje = utilildad_es_porcentaje
-
+        cliente.correo_electronico = request.form['correo-electronico']
+        cliente.telefono = request.form['telefono']
+        cliente.es_persona_fisica = request.form.get('es-persona-fisica') == 'on'
         cliente.esta_activo = request.form.get('esta-activo') == 'on'
 
         db.session.commit()
 
-        return redirect(url_for('cliente.view',id=id))
+        return redirect(url_for('cliente.view', id=id))
 
     return render_template('cliente/update.html', dato=cliente, lugares=lugares)
 
