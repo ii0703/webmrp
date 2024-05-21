@@ -89,7 +89,7 @@ def update(id):
 
     if request.method == 'POST':
         materia_prima.sku = request.form['sku']
-        materia_prima.categoria_materia_prima_id = request.form['categoria-materia_prima']
+        materia_prima.categoria_materia_prima_id = request.form['categoria-materia-prima']
         materia_prima.nombre = request.form['nombre']
         materia_prima.unidad_id = request.form['unidad']
         materia_prima.cantidad_total = request.form['cantidad-total']
