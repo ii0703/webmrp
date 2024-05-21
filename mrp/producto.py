@@ -33,28 +33,19 @@ def create():
 
     if request.method == 'POST':
         sku = request.form['sku']
-        categoria_producto_id = request.form['categoria-producto']
         nombre = request.form['nombre']
+        categoria_producto_id = request.form['categoria-producto']
         unidad_id = request.form['unidad']
         cantidad_total = request.form['cantidad-total']
         costo = request.form['costo']
         porcentaje_impuesto = request.form['porcentaje-impuesto']
         redondeo = request.form['redondeo']
-        modo_utilidad = request.form['modo-utilidad']
-        utilidad_monto = 0
-        utilidad_porcentaje = 0
-        utilildad_es_porcentaje = True
-        if modo_utilidad == 'porcentaje':
-            utilidad_porcentaje = request.form['utilidad-porcentaje']
-            utilildad_es_porcentaje = True
-        else:
-            utilidad_porcentaje = 0
-        if utilidad_monto == 'monto':
-            utilidad_monto = request.form['utilidad-monto']
-            utilildad_es_porcentaje = False
-        else:
-            utilidad_porcentaje = 0
+        utilildad_es_porcentaje = request.form.get('modo-utilidad') == 'porcentaje'
         esta_activo = request.form.get('esta-activo') == 'on'
+        porcentaje_utilidad = request.form['utilidad-porcentaje']
+        monto_utilidad = request.form['utilidad-monto']
+
+
 
         producto = Producto(sku=sku,
                             nombre=nombre,
@@ -65,8 +56,8 @@ def create():
                             porcentaje_impuesto=porcentaje_impuesto,
                             redondeo=redondeo,
                             utilildad_es_porcentaje=utilildad_es_porcentaje,
-                            porcentaje_utilidad=utilidad_porcentaje,
-                            monto_utilidad=utilidad_monto,
+                            porcentaje_utilidad=porcentaje_utilidad,
+                            monto_utilidad=monto_utilidad,
                             esta_activo=esta_activo
                             )
 
@@ -114,30 +105,13 @@ def update(id):
         producto.costo = request.form['costo']
         producto.porcentaje_impuesto = request.form['porcentaje-impuesto']
         producto.redondeo = request.form['redondeo']
-        modo_utilidad = request.form['modo-utilidad']
-        utilidad_monto = 0
-        utilidad_porcentaje = 0
-        utilildad_es_porcentaje = True
+        utilildad_es_porcentaje = request.form.get('modo-utilidad') == 'porcentaje'
+        producto.utilildad_es_porcentaje = utilildad_es_porcentaje
+        producto.esta_activo = request.form.get('esta-activo') == 'on'
+        producto.porcentaje_utilidad = request.form['utilidad-porcentaje']
+        producto.monto_utilidad = request.form['utilidad-monto']
 
         id: int = producto.id
-
-        if modo_utilidad == 'porcentaje':
-            utilidad_porcentaje = request.form['utilidad-porcentaje']
-            utilildad_es_porcentaje = True
-        else:
-            utilidad_porcentaje = 0
-
-        if utilidad_monto == 'monto':
-            utilidad_monto = request.form['utilidad-monto']
-            utilildad_es_porcentaje = False
-        else:
-            utilidad_porcentaje = 0
-
-        producto.utilidad_porcentaje = utilidad_porcentaje
-        producto.utilidad_monto = utilidad_monto
-        producto.utilildad_es_porcentaje = utilildad_es_porcentaje
-
-        producto.esta_activo = request.form.get('esta-activo') == 'on'
 
         db.session.commit()
 
