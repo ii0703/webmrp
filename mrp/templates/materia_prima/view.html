@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-sm mt-5">
+    <h2>Detalle de {{dato.nombre}}</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <dl>
+                <div class="row">
+                    <dt class="col-sm-5">
+                        SKU
+                    </dt>
+                    <dd class="col-sm-7">
+                        {{dato.SKU}}
+                    </dd>
+                </div>
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Nombre
+                    </dt>
+                    <dd class="col-sm-7">
+                        {{dato.nombre}}
+                    </dd>
+                </div>
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Estado
+                    </dt>
+                    <dd class="col-sm-7">
+                        {%if dato.esta_activo %}
+                        <span class="text-success">Activo</span>
+                        {%else%}
+                        <span class="text-danger">Inactivo</span>
+                        {%endif%}
+                    </dd>
+                </div>
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Categoría
+                    </dt>
+                    <dd class="col-sm-7">
+                        <a class="btn btn-light d-block my-1"
+                           href="{{url_for('categoria_materia_prima.view', id = dato.categoria_materia_prima.id)}}">
+                            {{dato.categoria_materia_prima.nombre}}
+                        </a>
+                    </dd>
+                </div>
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Unidad
+                    </dt>
+                    <dd class="col-sm-7">
+                        {{dato.unidad.nombre}}
+                    </dd>
+                </div>
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Cantidad
+                    </dt>
+                    <dd class="col-sm-7">
+                        <dl>
+                            <div class="row">
+                                <div class="col">
+                                    <dt>Total</dt>
+                                </div>
+                                <div class="col">
+                                    <dd>{{dato.cantidad_total}}</dd>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <dt>Disponible</dt>
+                                </div>
+                                <div class="col">
+                                    <dd>{{dato.cantidad_disponible}}</dd>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <dt>Reservado</dt>
+                                </div>
+                                <div class="col">
+                                    <dd>{{dato.cantidad_reservado}}</dd>
+                                </div>
+                            </div>
+                        </dl>
+                    </dd>
+                </div>
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Costo
+                    </dt>
+                    <dd class="col-sm-7">
+                        {{dato.costo}}
+                    </dd>
+                </div>
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Porcentaje de Impuesto
+                    </dt>
+                    <dd class="col-sm-7">
+                        {{dato.porcentaje_impuesto}}%
+                    </dd>
+                </div>
+
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Fecha de registro
+                    </dt>
+                    <dd class="col-sm-7">
+                        {{dato.fecha_registro}}
+                    </dd>
+                </div>
+            </dl>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col">
+                    <a class="btn btn-info d-block my-1"
+                       href="{{url_for('materia_prima.update', id = dato.id)}}">Editar</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <a class="btn btn-danger d-block my-1"
+                       href="{{url_for('materia_prima.delete', id = dato.id)}}">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row my-2">
+        <div class="col text-center">
+            <a class="btn btn-secondary"
+               href="{{ url_for('materia_prima.index')}}">
+                Regresar al listado
+            </a>
+        </div>
+    </div>
+</div>
+
+
+{% endblock%}

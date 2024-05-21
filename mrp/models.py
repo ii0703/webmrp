@@ -220,11 +220,7 @@ class MateriaPrima(db.Model):
     cantidad_reservado: Mapped[float] = mapped_column(Double, default=0.0)
     costo: Mapped[float] = mapped_column(Numeric(12, 2), default=0.0)
     porcentaje_impuesto: Mapped[float] = mapped_column(Double, default=0.0)
-    redondeo: Mapped[float] = mapped_column(Double, default=0.0)
-    utilildad_es_porcentaje: Mapped[bool] = mapped_column(Boolean, default=True)
-    porcentaje_utilidad: Mapped[float] = mapped_column(Double, default=0.0)
-    monto_utilidad: Mapped[float] = mapped_column(Double, default=0.0)
-    fecha_registro: Mapped[date] = mapped_column(Date, server_default=func.now())
+    fecha_registro: Mapped[date] = mapped_column(Date, default=datetime.now())
     esta_activo: Mapped[bool] = mapped_column(Boolean, default=True)
     lotes: Mapped[list['MateriaPrimaLote']] = relationship(back_populates='materia_prima')
 

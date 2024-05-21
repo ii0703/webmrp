@@ -49,6 +49,12 @@ def create_app():
     from . import cliente
     app.register_blueprint(cliente.bp)
 
+    from . import categoria_materia_prima
+    app.register_blueprint(categoria_materia_prima.bp)
+
+    from . import materia_prima
+    app.register_blueprint(materia_prima.bp)
+
     @app.route('/')
     def index():
         return render_template('index.html')

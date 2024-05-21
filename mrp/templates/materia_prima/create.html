@@ -3,25 +3,122 @@
 {% block content %}
 
 <section class="container-sm">
-    <h3 class="text-center mt-3 mb-3">{% block title %}Ingresar Producto{% endblock %}</h3>
-    <form action="" method="post">
-        <div class="form-group">
-            <label for="title">Código</label>
-            <input type="text" class="form-control" id="codigo" name="codigo" required>
+    <h3 class="text-center mt-3 mb-3">{% block title %}Ingresar Materia Prima{% endblock %}</h3>
+    <form action="" method="post" class="form-inline">
+        <div class="form-group row my-2">
+            <div class="col-3">
+                <label for="sku" class="col-3">Código</label>
+            </div>
+            <div class="col-9">
+                <input type="text" class="form-control col-9"
+                       id="sku" name="sku"
+                       required maxlength="13">
+            </div>
         </div>
-        <div class="form-group">
-            <label for="title">Nombre</label>
-            <input type="text" class="form-control" id="nombre" name="nombre" required>
+
+        <div class="form-group row my-2">
+            <div class="col-3">
+                <label for="categoria-materia-prima">
+                    Categoría de materia_prima
+                </label>
+            </div>
+            <div class="col-9">
+                <select class="form-select form-select-sm mb-3"
+                        id="categoria-materia-prima" name="categoria-materia-prima">
+                    {%for categoria_materia_prima in categorias_materia_prima%}
+                    <option value="{{categoria_materia_prima.id}}"> {{categoria_materia_prima.nombre}}
+                    </option>
+                    {%endfor%}
+                </select>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="title">Precio</label>
-            <input type="text" class="form-control" id="precio" name="precio" required>
+
+        <div class="form-group row my-2">
+            <div class="col-3">
+                <label for="nombre">
+                    Nombre
+                </label>
+            </div>
+            <div class="col-9">
+                <input type="text" class="form-control"
+                       id="nombre" name="nombre"
+                       required maxlength="100">
+            </div>
         </div>
-        <br>
-        <div class="text-center">
-            <input type="submit" class="btn btn-primary" value="Guardar">
-            <a href="{{ url_for('producto.index')}}" class="btn btn-secondary">Cancelar</a>
+
+        <div class="form-group row my-2">
+            <div class="col-3">
+                <label for="unidad">Unidad</label>
+            </div>
+            <div class="col-9">
+                <select class="form-select form-select-sm mb-3"
+                        id="unidad" name="unidad">
+                    {%for unidad in unidades%}
+                    <option value="{{unidad.id}}">
+                        {{unidad.nombre}}
+                    </option>
+                    {%endfor%}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row my-2">
+            <div class="col-3">
+                <label for="cantidad-total">Cantidad</label>
+            </div>
+            <div class="col-9">
+                <input type="number" class="form-control"
+                       id="cantidad-total" name="cantidad-total"
+                       value="0"
+                       required>
+            </div>
+        </div>
+
+        <div class="form-group row my-2">
+            <div class="col-3">
+                <label for="costo">Costo</label>
+            </div>
+            <div class="col-9">
+                <input type="number" class="form-control"
+                       id="costo" name="costo" required>
+            </div>
+        </div>
+
+        <div class="form-group row my-2">
+            <div class="col-3">
+                <label for="porcentaje-impuesto">Porcentaje impuesto (100% -> 100)</label>
+            </div>
+            <div class="col-9">
+                <input type="number" class="form-control"
+                       id="porcentaje-impuesto" name="porcentaje-impuesto"
+                       value="0"
+                       required>
+            </div>
+        </div>
+
+        <div class="form-group row my-2">
+            <div class="col-3">
+                <label class="form-check-label" for="esta-activo">
+                    Estado
+                </label>
+            </div>
+            <div class="col-9">
+                <input class="form-check-input" type="checkbox" role="switch"
+                       id="esta-activo" name="esta-activo"
+                        checked>
+                <label class="form-check-label" for="esta-activo">
+                    Activo
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group row my-2">
+            <div class="col text-center">
+                <input type="submit" class="btn btn-primary" value="Guardar">
+                <a href="{{ url_for('materia_prima.index')}}" class="btn btn-secondary">Cancelar</a>
+            </div>
         </div>
     </form>
+
 </section>
 {% endblock%}
