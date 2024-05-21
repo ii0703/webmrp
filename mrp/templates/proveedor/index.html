@@ -12,27 +12,28 @@
     <table class="table">
         <thead>
         <tr>
-            <th class="col">SKU</th>
+            <th class="col">Identificación</th>
             <th class="col">Nombre</th>
-            <th class="col">Opciones</th>
+            <th class="col">Estado</th>
         </tr>
         </thead>
         <tbody>
         {% for dato in datos | reverse %}
         <tr>
             <td>
-                <a href="{{url_for('producto.view', id = dato.id)}}"
+                <a href="{{url_for('proveedor.view', id = dato.id)}}"
                 class="btn btn-light btn-sm d-block my-1">
-                    {{dato.sku}}</a>
+                    {{dato.identificacion}}</a>
             </td>
             <td>
-                <p>{{dato.nombre}}</p>
+                {{dato.nombre}}
             </td>
             <td>
-                <a href="{{url_for('producto.update', id = dato.id)}}"
-                   class="btn btn-info btn-sm d-block my-1">Editar</a>
-                <a href="{{url_for('producto.delete', id = dato.id)}}"
-                   class="btn btn-danger btn-sm d-block my-1">Eliminar</a>
+                {%if dato.esta_activo %}
+                <span class="text-success">Activo</span>
+                {%else%}
+                <span class="text-danger">Inactivo</span>
+                {%endif%}
             </td>
         </tr>
         {% endfor %}
@@ -40,7 +41,7 @@
     </table>
 
 
-{{macros.render_pagination(datos,'producto.index')}}
+{{macros.render_pagination(datos,'proveedor.index')}}
 
 
 </section>

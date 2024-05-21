@@ -46,19 +46,107 @@
                         </a>
                     </dd>
                 </div>
-
-                <!--
-                                <div class="row">
-                                    <dt class="col-sm-5">
-
-                                    </dt>
-                                    <dd class="col-sm-7">
-
-                                    </dd>
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Unidad
+                    </dt>
+                    <dd class="col-sm-7">
+                        {{dato.unidad.nombre}}
+                    </dd>
+                </div>
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Cantidad
+                    </dt>
+                    <dd class="col-sm-7">
+                        <dl>
+                            <div class="row">
+                                <div class="col">
+                                    <dt>Total</dt>
                                 </div>
-                -->
+                                <div class="col">
+                                    <dd>{{dato.cantidad_total}}</dd>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <dt>Disponible</dt>
+                                </div>
+                                <div class="col">
+                                    <dd>{{dato.cantidad_disponible}}</dd>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <dt>Reservado</dt>
+                                </div>
+                                <div class="col">
+                                    <dd>{{dato.cantidad_reservado}}</dd>
+                                </div>
+                            </div>
+                        </dl>
+                    </dd>
+                </div>
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Costo
+                    </dt>
+                    <dd class="col-sm-7">
+                        {{dato.costo}}
+                    </dd>
+                </div>
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Porcentaje de Impuesto
+                    </dt>
+                    <dd class="col-sm-7">
+                        {{dato.porcentaje_impuesto}}%
+                    </dd>
+                </div>
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Redondeo
+                    </dt>
+                    <dd class="col-sm-7">
+                        {{dato.redondeo}}
+                    </dd>
+                </div>
+                {%if dato.utilildad_es_porcentaje%}
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Modo de cálculo de utilidad
+                    </dt>
+                    <dd class="col-sm-7">
+                        Por porcentaje
+                    </dd>
+                </div>
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Porcentaje de utilidad
+                    </dt>
+                    <dd class="col-sm-7">
+                        {{dato.porcentaje_utilidad}}%
+                    </dd>
+                </div>
+                {%else%}
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Modo de cálculo de utilidad
+                    </dt>
+                    <dd class="col-sm-7">
+                        Por monto
+                    </dd>
+                </div>
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Monto de utilidad
+                    </dt>
+                    <dd class="col-sm-7">
+                        {{dato.monto_utilidad}}%
+                    </dd>
+                </div>
+                {%endif%}
             </dl>
-            <!--      <img src="producto.jpg" class="img-fluid" alt="Producto">-->
         </div>
         <div class="col-md-6">
             <div class="row">
@@ -75,20 +163,20 @@
             </div>
         </div>
     </div>
-    <div class="row mt-4">
-        <div class="col">
-            <h3>Detalle extendido</h3>
-            <ul class="list-group">
-                <li class="list-group-item"><strong>Cantidad:</strong> {{dato.cantidad_total}}(total) /
-                    {{dato.cantidad_disponible}}(disponible) / {{dato.cantidad_reservado}}(reservado) en
-                    {{dato.unidad.nombre}}
-                </li>
-                <li class="list-group-item"><strong>Costo:</strong> {{dato.costo}}</li>
-                <li class="list-group-item"><strong>Redondeo del precio:</strong> Múltiplos de {{dato.redondeo}}</li>
-                <li class="list-group-item"><strong>Fecha registro:</strong> {{dato.fecha_registro}}</li>
-            </ul>
-        </div>
-    </div>
+    <!--    <div class="row mt-4">-->
+    <!--        <div class="col">-->
+    <!--            <h3>Detalle extendido</h3>-->
+    <!--            <ul class="list-group">-->
+    <!--                <li class="list-group-item"><strong>Cantidad:</strong> {{dato.cantidad_total}}(total) /-->
+    <!--                    {{dato.cantidad_disponible}}(disponible) / {{dato.cantidad_reservado}}(reservado) en-->
+    <!--                    {{dato.unidad.nombre}}-->
+    <!--                </li>-->
+    <!--                <li class="list-group-item"><strong>Costo:</strong> {{dato.costo}}</li>-->
+    <!--                <li class="list-group-item"><strong>Redondeo del precio:</strong> Múltiplos de {{dato.redondeo}}</li>-->
+    <!--                <li class="list-group-item"><strong>Fecha registro:</strong> {{dato.fecha_registro}}</li>-->
+    <!--            </ul>-->
+    <!--        </div>-->
+    <!--    </div>-->
     <div class="row my-2">
         <div class="col text-center">
             <a class="btn btn-secondary"
