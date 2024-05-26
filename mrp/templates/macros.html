@@ -1,8 +1,4 @@
-{% macro render_items(item) %}
-<li>Detalles del producto: {{item}}</li>
-{% endmacro %}
-
-{% macro render_pagination(pagination, endpoint) %}
+{% macro render_pagination(pagination, endpoint, busqueda = '') %}
 <!--
 <div class="page-item">
   {{ pagination.first }} - {{ pagination.last }} de {{ pagination.total }}
@@ -11,27 +7,38 @@
 <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center">
         <li class="page-item">
-            <a class="page-link" href="{{url_for(endpoint)}}?p={{1}}">Inicio</a>
+            <a class="page-link" href="{{url_for(endpoint)}}?pagina={{1}}">Primera</a>
         </li>
+
         {% for page in pagination.iter_pages() %}
-        {% if page %}
-        {% if page != pagination.page %}
-
-        <li class="page-item">
-            <a class="page-link" href="{{url_for(endpoint)}}?p={{page}}">{{ page }}</a>
-        </li>
-
-        {% else %}
-        <li class="page-item">
-            <a class="page-link active" href="{{url_for(endpoint)}}?p={{page}}">{{ page }}</a>
-        </li>
-        {% endif %}
-        {% else %}
-        <span class=ellipsis>…</span>
-        {% endif %}
+            {% if page %}
+                {% if busqueda == '' %}
+                    {% if page != pagination.page %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{url_for(endpoint,pagina=page)}}">{{ page }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link active" href="{{url_for(endpoint,pagina=page)}}">{{ page }}</a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    {% if page != pagination.page %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{url_for(endpoint,pagina=page,busqueda=busqueda)}}">{{ page }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link active" href="{{url_for(endpoint,pagina=page,busqueda=busqueda)}}">{{ page }}</a>
+                        </li>
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                <span class=ellipsis>…</span>
+            {% endif %}
         {% endfor %}
         <li class="page-item">
-            <a class="page-link" href="{{url_for(endpoint)}}?p={{pagination.pages}}">Final</a>
+            <a class="page-link" href="{{url_for(endpoint,pagina=pagination.pages,busqueda=busqueda)}}">Última</a>
         </li>
     </ul>
 </nav>
