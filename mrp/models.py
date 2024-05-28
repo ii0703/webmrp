@@ -336,3 +336,17 @@ class ListaMaterialesMateriasPrimas(db.Model):
 
     def __repr__(self):
         return f'<ListaMaterialesMateriasPrimas: "{self.producto.nombre}">'
+
+
+class PlanMaestroProduccion(db.Model):
+    __tablename__ = 'planes_maestros_producciones'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    nombre: Mapped[str] = mapped_column(String(100))
+    inicio: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    fin: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    esta_finalizado:Mapped[bool] = mapped_column(Boolean, default=False)
+
+    def __repr__(self):
+        return f'<PlanMaestroProduccion: "{self.nombre}">'
+

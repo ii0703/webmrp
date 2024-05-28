@@ -55,6 +55,9 @@ def create_app():
     from . import materia_prima
     app.register_blueprint(materia_prima.bp)
 
+    from . import mps
+    app.register_blueprint(mps.bp)
+
     @app.route('/')
     def index():
         return render_template('index.html')

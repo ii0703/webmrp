@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-sm mt-5">
+    <h2>Detalle de {{dato.nombre}}</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <dl>
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Código
+                    </dt>
+                    <dd class="col-sm-7">
+                        {{dato.codigo}}
+                    </dd>
+                </div>
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Nombre
+                    </dt>
+                    <dd class="col-sm-7">
+                        {{dato.nombre}}
+                    </dd>
+                </div>
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Estado
+                    </dt>
+                    <dd class="col-sm-7">
+                        {%if dato.esta_activo %}
+                        <span class="text-success">Activo</span>
+                        {%else%}
+                        <span class="text-danger">Inactivo</span>
+                        {%endif%}
+                    </dd>
+                </div>
+            </dl>
+            <!--      <img src="producto.jpg" class="img-fluid" alt="Producto">-->
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col">
+                    <a class="btn btn-info d-block my-1"
+                       href="{{url_for('lugar.update', id = dato.id)}}">Editar</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <a class="btn btn-danger d-block my-1"
+                       href="{{url_for('lugar.delete', id = dato.id)}}">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--    <div class="row mt-4">-->
+    <!--        <div class="col">-->
+    <!--            <h3>Detalles del Producto</h3>-->
+    <!--            <ul class="list-group">-->
+    <!--                <li class="list-group-item"><strong>Material:</strong> Plástico</li>-->
+    <!--                <li class="list-group-item"><strong>Dimensiones:</strong> 10cm x 5cm x 3cm</li>-->
+    <!--                <li class="list-group-item"><strong>Peso:</strong> 200g</li>-->
+    <!--                <li class="list-group-item"><strong>Color:</strong> Negro</li>-->
+    <!--            </ul>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <div class="row my-2">
+        <div class="col text-center">
+            <a class="btn btn-secondary"
+               href="{{ url_for('lugar.index')}}">
+                Regresar al listado
+            </a>
+        </div>
+    </div>
+</div>
+
+
+{% endblock%}
