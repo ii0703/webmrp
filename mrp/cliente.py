@@ -111,7 +111,7 @@ def csv_template():
     csv_writer = csv.writer(file_output, delimiter=',',
                             quoting=csv.QUOTE_ALL)
     csv_writer.writerow(['Identificación', 'Nombre', 'Lugar', 'Correo electrónico', 'Teléfono', 'Tipo', 'Estado'])
-    csv_items = [['Identificación', 'Nombre', 'Lugar', 'Correo electrónico', 'Teléfono', 'Tipo', 'Estado']]
+    csv_items = [['GEN01', 'Cliente General', 'LUGAR01', 'noreply@nobody.com', '55555555', 'Empresa', 'Activo']]
     for item in csv_items:
         csv_writer.writerow(item)
     file_output.seek(0)
