@@ -346,7 +346,23 @@ class PlanMaestroProduccion(db.Model):
     inicio: Mapped[Optional[datetime]] = mapped_column(DateTime)
     fin: Mapped[Optional[datetime]] = mapped_column(DateTime)
     esta_finalizado:Mapped[bool] = mapped_column(Boolean, default=False)
+    productos: Mapped[list['PlanMaestroProduccionProductos']] = relationship(back_populates='mps')
+    
 
     def __repr__(self):
         return f'<PlanMaestroProduccion: "{self.nombre}">'
 
+
+
+class PlanMaestroProduccionProductos(db.Model):
+    __tablename__ = 'planes_maestros_producciones_productos'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    mps_id: Mapped[int] = mapped_column(Integer, ForeignKey('planes_maestros_producciones.id'))
+    mps: Mapped['PlanMaestroProduccion'] = relationship()
+    producto_id: Mapped[int] = mapped_column(Integer, ForeignKey('productos.id'))
+    producto: Mapped['Producto'] = relationship()
+    
+
+    def __repr__(self):
+        return f'<PlanMaestroProduccionProductos: "{self.id} - {self.nombre}">'
