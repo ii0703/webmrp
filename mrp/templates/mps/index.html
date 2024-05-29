@@ -47,14 +47,11 @@
         </div>
     </nav>
     <h2>Plan Maestro de Producción</h2>
-<div class="form-outline datepicker">
-  <input type="text" class="form-control" id="exampleDatepicker1">
-  <label for="exampleDatepicker1" class="form-label">Example label</label>
-</div>
+
     <table class="table">
         <thead>
         <tr>
-            <th class="col">Código</th>
+            <th class="col">Consecutivo</th>
             <th class="col">Nombre</th>
             <th class="col">Estado</th>
         </tr>
@@ -65,7 +62,7 @@
             <td>
                 <a href="{{url_for('mps.view', id = dato.id)}}"
                 class="btn btn-light btn-sm d-block my-1">
-                    {{dato.codigo}}</a>
+                    Consecutivo {{dato.id}}</a>
             </td>
             <td>
                 {{dato.nombre}}

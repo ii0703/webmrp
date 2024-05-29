@@ -9,10 +9,10 @@
             <dl>
                 <div class="row">
                     <dt class="col-sm-5">
-                        Código
+                        Consecutivo
                     </dt>
                     <dd class="col-sm-7">
-                        {{dato.codigo}}
+                        {{dato.id}}
                     </dd>
                 </div>
                 <div class="row">
@@ -25,30 +25,45 @@
                 </div>
                 <div class="row">
                     <dt class="col-sm-5">
-                        Estado
+                        Inicio esperado
                     </dt>
                     <dd class="col-sm-7">
-                        {%if dato.esta_activo %}
-                        <span class="text-success">Activo</span>
+                        {{dato.inicio.strftime('%Y-%m-%d')}}
+                    </dd>
+                </div>
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Final esperado
+                    </dt>
+                    <dd class="col-sm-7">
+                        {{dato.fin.strftime('%Y-%m-%d')}}
+                    </dd>
+                </div>
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Finalizado
+                    </dt>
+                    <dd class="col-sm-7">
+                        {%if dato.esta_finalizado %}
+                        <span class="text-success">Finalizado</span>
                         {%else%}
-                        <span class="text-danger">Inactivo</span>
+                        <span class="text-danger">Activo</span>
                         {%endif%}
                     </dd>
                 </div>
             </dl>
-            <!--      <img src="producto.jpg" class="img-fluid" alt="Producto">-->
         </div>
         <div class="col-md-6">
             <div class="row">
                 <div class="col">
                     <a class="btn btn-info d-block my-1"
-                       href="{{url_for('lugar.update', id = dato.id)}}">Editar</a>
+                       href="{{url_for('mps.update', id = dato.id)}}">Editar</a>
                 </div>
             </div>
             <div class="row">
                 <div class="col">
                     <a class="btn btn-danger d-block my-1"
-                       href="{{url_for('lugar.delete', id = dato.id)}}">Eliminar</a>
+                       href="{{url_for('mps.delete', id = dato.id)}}">Eliminar</a>
                 </div>
             </div>
         </div>
@@ -67,7 +82,7 @@
     <div class="row my-2">
         <div class="col text-center">
             <a class="btn btn-secondary"
-               href="{{ url_for('lugar.index')}}">
+               href="{{ url_for('mps.index')}}">
                 Regresar al listado
             </a>
         </div>

@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, g, abort
 from flask import (send_file, stream_with_context, Response)
 from io import BytesIO, StringIO
+from datetime import datetime, timedelta
 import csv
 from mrp.auth import login_required
 from .models import PlanMaestroProduccion
@@ -125,16 +126,17 @@ def csv_template():
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():
-
     if request.method == 'POST':
-        simbolo: str = request.form['simbolo']
         nombre: str = request.form['nombre']
-        esta_activo: bool = request.form.get('esta-activo', '') == 'on'
-        tipo_mps_id: int = request.form['tipo-mps']
-        mps = PlanMaestroProduccion(simbolo=simbolo,
-                        nombre=nombre,
-                        esta_activo=esta_activo,
-                        tipo_mps_id=tipo_mps_id)
+        inicio_str: str = request.form['inicio']
+        inicio:datetime = datetime.strptime(inicio_str, '%Y-%m-%d')
+        final_str: str = request.form['final']
+        final:datetime = datetime.strptime(final_str, '%Y-%m-%d')
+        esta_finalizado: bool = request.form.get('esta-finalizado', '') == 'on'
+        mps = PlanMaestroProduccion(nombre=nombre,
+                                    inicio=inicio,
+                                    fin=final,
+                                    esta_finalizado=esta_finalizado)
 
         db.session.add(mps)
         id: int = -1
@@ -156,7 +158,11 @@ def create():
 
         return redirect(url_for('mps.view', id=id))
 
-    return render_template('mps/create.html')
+    hoy_str = datetime.now().strftime('%Y-%m-%d')
+    final = datetime.now() + timedelta(days=28)
+    final_str = final.strftime('%Y-%m-%d')
+
+    return render_template('mps/create.html', inicio=hoy_str, final=final_str)
 
 
 @bp.route('/update/<int:id>', methods=['GET', 'POST'])
