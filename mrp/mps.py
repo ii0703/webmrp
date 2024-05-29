@@ -171,10 +171,12 @@ def update(id):
     mps = get(id)
 
     if request.method == 'POST':
-        mps.simbolo = request.form['simbolo']
-        mps.nombre = request.form['nombre']
-        mps.esta_activo = request.form.get('esta_activo') == 'on'
-        mps.tipo_mps_id = request.form['tipo-mps']
+        mps.nombre: str = request.form['nombre']
+        inicio_str: str = request.form['inicio']
+        mps.inicio:datetime = datetime.strptime(inicio_str, '%Y-%m-%d')
+        final_str: str = request.form['final']
+        mps.final:datetime = datetime.strptime(final_str, '%Y-%m-%d')
+        mps.esta_finalizado: bool = request.form.get('esta-finalizado', '') == 'on'
 
         id: int = mps.id
 

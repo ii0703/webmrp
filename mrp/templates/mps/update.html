@@ -3,20 +3,8 @@
 {% block content %}
 
 <section class="container-sm">
-    <h3 class="text-center mt-3 mb-3">{% block title %}Modificar Lugar{% endblock %}</h3>
+    <h3 class="text-center mt-3 mb-3">{% block title %}Modificar Plan Maestro de Producción{% endblock %}</h3>
     <form action="" method="post" class="form-inline">
-        <div class="form-group row my-2">
-            <div class="col-3">
-                <label for="codigo" class="col-3">Código</label>
-            </div>
-            <div class="col-9">
-                <input type="text" class="form-control col-9"
-                       id="codigo" name="codigo"
-                       value="{{dato.codigo}}"
-                       required maxlength="13">
-            </div>
-        </div>
-
         <div class="form-group row my-2">
             <div class="col-3">
                 <label for="nombre">Nombre</label>
@@ -31,23 +19,46 @@
 
         <div class="form-group row my-2">
             <div class="col-3">
-            <label class="form-check-label" for="esta-activo">Estado</label>
+                <label for="inicio">Inicio estimado</label>
+            </div>
+            <div class="col-9">
+                <input type="date" class="form-control"
+                       id="inicio" name="inicio"
+                       min="{{inicio}}" value="{{dato.inicio.strftime('%Y-%m-%d')}}"
+                       required>
+            </div>
+        </div>
+
+        <div class="form-group row my-2">
+            <div class="col-3">
+                <label for="final">Final estimado</label>
+            </div>
+            <div class="col-9">
+                <input type="date" class="form-control"
+                       id="final" name="final"
+                       min="{{dato.inicio.strftime('%Y-%m-%d')}}" value="{{dato.fin.strftime('%Y-%m-%d')}}"
+                       required>
+            </div>
+        </div>
+
+        <div class="form-group row my-2">
+            <div class="col-3">
+            <label class="form-check-label" for="esta-finalizado">Finalizado</label>
             </div>
             <div class="col-9">
             <input class="form-check-input" type="checkbox" role="switch"
-                   id="esta-activo" name="esta-activo"
-                   {% if dato.esta_activo%}
+                   {% if dato.esta_finalizado %}
                    checked
                    {%endif%}
-            >
-            <label class="form-check-label" for="esta-activo">Activo</label>
+                   id="esta-finalizado" name="esta-finalizado">
+            <label class="form-check-label" for="esta-finalizado">Finalizado</label>
             </div>
         </div>
 
         <div class="form-group row my-2">
             <div class="col text-center">
             <input type="submit" class="btn btn-primary" value="Guardar">
-            <a href="{{ url_for('lugar.index')}}" class="btn btn-secondary">Cancelar</a>
+            <a href="{{ url_for('mps.index')}}" class="btn btn-secondary">Cancelar</a>
             </div>
         </div>
     </form>

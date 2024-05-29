@@ -68,10 +68,10 @@
                 {{dato.nombre}}
             </td>
             <td>
-                {%if dato.esta_activo %}
+                {%if not dato.esta_finalizado %}
                 <span class="text-success">Activo</span>
                 {%else%}
-                <span class="text-danger">Inactivo</span>
+                <span class="text-danger">Finalizado</span>
                 {%endif%}
             </td>
         </tr>
