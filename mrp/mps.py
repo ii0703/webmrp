@@ -1,10 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for, g, abort
-from flask import (send_file, stream_with_context, Response)
+from flask import (send_file, stream_with_context, Response, flash)
 from io import BytesIO, StringIO
 from datetime import datetime, timedelta
 import csv
 from mrp.auth import login_required
-from .models import PlanMaestroProduccion
+from .models import PlanMaestroProduccion, Producto, PlanMaestroProduccionProductos
 from mrp import db
 from sqlite3 import IntegrityError
 
@@ -129,9 +129,9 @@ def create():
     if request.method == 'POST':
         nombre: str = request.form['nombre']
         inicio_str: str = request.form['inicio']
-        inicio:datetime = datetime.strptime(inicio_str, '%Y-%m-%d')
+        inicio: datetime = datetime.strptime(inicio_str, '%Y-%m-%d')
         final_str: str = request.form['final']
-        final:datetime = datetime.strptime(final_str, '%Y-%m-%d')
+        final: datetime = datetime.strptime(final_str, '%Y-%m-%d')
         esta_finalizado: bool = request.form.get('esta-finalizado', '') == 'on'
         mps = PlanMaestroProduccion(nombre=nombre,
                                     inicio=inicio,
@@ -173,9 +173,9 @@ def update(id):
     if request.method == 'POST':
         mps.nombre: str = request.form['nombre']
         inicio_str: str = request.form['inicio']
-        mps.inicio:datetime = datetime.strptime(inicio_str, '%Y-%m-%d')
+        mps.inicio: datetime = datetime.strptime(inicio_str, '%Y-%m-%d')
         final_str: str = request.form['final']
-        mps.final:datetime = datetime.strptime(final_str, '%Y-%m-%d')
+        mps.final: datetime = datetime.strptime(final_str, '%Y-%m-%d')
         mps.esta_finalizado: bool = request.form.get('esta-finalizado', '') == 'on'
 
         id: int = mps.id
@@ -204,6 +204,58 @@ def update(id):
 def view(id):
     mps = get(id)
     return render_template('mps/view.html', dato=mps)
+
+
+@bp.route('/product_add/<int:id>', methods=['GET', 'POST'])
+@login_required
+def product_add(id):
+    mps = get(id)
+    productos_relacionado_subquery = (db.session
+                                      .query(PlanMaestroProduccionProductos.producto_id)
+                                      .filter(PlanMaestroProduccionProductos.mps_id == id))
+    productos_relacionados = Producto.query.filter(Producto.id.in_(productos_relacionado_subquery)).all()
+
+    productos = None
+    codigo = ''
+    nombre = ''
+    # flash(request.form.getlist('selected_items'))
+    if request.method == 'POST':
+        if request.form.get('type') == 'add':
+            productos_seleccionado = request.form.getlist('selected_items')
+            if productos_seleccionado:
+                for producto in productos_seleccionado:
+                    pmpp = PlanMaestroProduccionProductos()
+                    pmpp.mps = mps
+                    pmpp.producto_id = int(producto)
+                    db.session.add(pmpp)
+
+            try:
+                db.session.commit()
+            except Exception as err:
+                db.session.rollback()
+                abort(409, err)
+            # except IntegrityError as err:
+            #     db.session.rollback()
+            #     abort(409, err.orig)
+            # except Exception as err:
+            #     db.session.rollback()
+            #     abort(500, err)
+            # finally:
+            #     db.session.close()
+
+        if request.form.get('type') == 'search':
+            nombre = request.form['nombre']
+
+            codigo = request.form['codigo']
+            query = Producto.query
+            if codigo:
+                query = query.filter(Producto.sku.ilike(f'%{codigo}%'))
+            if nombre:
+                query = query.filter(Producto.nombre.ilike(f'%{nombre}%'))
+
+            productos = query.limit(50).all()
+
+    return render_template('mps/product_add.html', dato=mps, codigo=codigo, nombre=nombre, productos=productos, productos_relacionados=productos_relacionados)
 
 
 @bp.route('/delete/<int:id>', methods=['GET', 'POST'])
