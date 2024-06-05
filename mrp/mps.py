@@ -4,7 +4,7 @@ from io import BytesIO, StringIO
 from datetime import datetime, timedelta, date
 import csv
 from mrp.auth import login_required
-from .models import PlanMaestroProduccion, Producto, PlanMaestroProduccionProductos
+from .models import PlanMaestroProduccion, Producto, PlanMaestroProduccionProductos, PlanMaestroProduccionDemandas
 from mrp import db
 from sqlite3 import IntegrityError
 
@@ -230,17 +230,29 @@ def view(id):
                                       .filter(PlanMaestroProduccionProductos.mps_id == id))
     productos_relacionados = Producto.query.filter(Producto.id.in_(productos_relacionado_subquery)).all()
 
+    query_demandas = PlanMaestroProduccionDemandas.query
+    query_demandas = query_demandas.filter(PlanMaestroProduccionDemandas.mps_id == id)
+    demandas = query_demandas.all()
+    dict_demandas = {(demanda.producto_id, demanda.semana): demanda for demanda in demandas}
+
+    query_semanas = (db.session.query(PlanMaestroProduccionDemandas.semana)
+                     .filter(PlanMaestroProduccionDemandas.mps_id == id)
+                     .order_by(PlanMaestroProduccionDemandas.semana.asc())
+                     .distinct())
+    semanas = [semana[0] for semana in query_semanas.all()]
+    # flash(unique_weeks)
+
     inicio = f'{mps.inicio.year}-W{mps.inicio.isocalendar()[1]}'
     final = f'{mps.fin.year}-W{mps.fin.isocalendar()[1]}'
 
-    return render_template('mps/view.html', dato=mps, productos_relacionados=productos_relacionados, inicio=inicio, final=final)
+    return render_template('mps/view.html', dato=mps, productos_relacionados=productos_relacionados, inicio=inicio,
+                           final=final, semanas=semanas, demandas=dict_demandas)
 
 
 @bp.route('/product_add/<int:id>', methods=['GET', 'POST'])
 @login_required
 def product_add(id):
     mps = get(id)
-
 
     productos = None
     codigo = ''
@@ -294,7 +306,9 @@ def product_add(id):
                                       .filter(PlanMaestroProduccionProductos.mps_id == id))
     productos_relacionados = Producto.query.filter(Producto.id.in_(productos_relacionado_subquery)).all()
 
-    return render_template('mps/product_add.html', dato=mps, codigo=codigo, nombre=nombre, productos=productos, productos_relacionados=productos_relacionados)
+    return render_template('mps/product_add.html', dato=mps, codigo=codigo, nombre=nombre, productos=productos,
+                           productos_relacionados=productos_relacionados)
+
 
 @bp.route('/product_demand/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -302,9 +316,9 @@ def product_demand(id):
     mps = get(id)
     dia_inicio = mps.inicio
     dia_final = mps.fin
-    dias:timedelta = dia_final - dia_inicio
-    semanas = int(dias.days/7) + 1
-    dias_semana_iso = [dia_inicio+timedelta(days=i*7) for i in range(0, semanas)]
+    dias: timedelta = dia_final - dia_inicio
+    semanas = int(dias.days / 7) + 1
+    dias_semana_iso = [dia_inicio + timedelta(days=i * 7) for i in range(0, semanas)]
     semanas_iso = [f'{fecha.year}-W{fecha.isocalendar()[1]}' for fecha in dias_semana_iso]
 
     productos_registrados_subquery = (db.session
@@ -312,23 +326,43 @@ def product_demand(id):
                                       .filter(PlanMaestroProduccionProductos.mps_id == id))
 
     query = Producto.query
-
     query = query.filter(Producto.id.in_(productos_registrados_subquery))
-
     productos = query.all()
 
+    query_demandas = PlanMaestroProduccionDemandas.query
+    query_demandas = query_demandas.filter(PlanMaestroProduccionDemandas.mps_id == id)
+    demandas = query_demandas.all()
+
+    dict_demandas = {(demanda.producto_id, demanda.semana): demanda for demanda in demandas}
+
     form_data = {}
+    for demanda in demandas:
+        form_data['d-{}-{}'.format(demanda.producto_id, demanda.semana)] = demanda.cantidad
+
     if request.method == 'POST':
         form_data = request.form
         for key in form_data:
             if key.startswith('d-'):
-                k, producto_id, year,week = key.split('-')
-                week_iso = '{}-{}'.format(year,week)
-                flash('{} {} {}'.format(producto_id, week_iso, form_data.get(key)))
+                k, producto_id, year, week = key.split('-')
+                producto_id = int(producto_id)
+                week_iso = '{}-{}'.format(year, week)
+                key_dict = (producto_id, week_iso)
+                # flash(dict_demandas)
+                if key_dict in dict_demandas:
+                    demanda = dict_demandas.get(key_dict)
+                    demanda.cantidad = float(form_data.get(key))
+                else:
+                    demanda = PlanMaestroProduccionDemandas()
+                    demanda.mps_id = id
+                    demanda.producto_id = producto_id
+                    demanda.semana = week_iso
+                    demanda.cantidad = float(form_data.get(key))
+                    db.session.add(demanda)
 
-        # flash(form_data)
+        db.session.commit()
+    return render_template('mps/product_demand.html', dato=mps, semanas=semanas_iso, productos=productos,
+                           form_data=form_data)
 
-    return render_template('mps/product_demand.html', dato=mps, semanas=semanas_iso, productos=productos, form_data=form_data)
 
 @bp.route('/delete/<int:id>', methods=['GET', 'POST'])
 def delete(id):
