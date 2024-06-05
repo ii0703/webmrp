@@ -296,6 +296,30 @@ def product_add(id):
 
     return render_template('mps/product_add.html', dato=mps, codigo=codigo, nombre=nombre, productos=productos, productos_relacionados=productos_relacionados)
 
+@bp.route('/product_demand/<int:id>')
+@login_required
+def product_demand(id):
+    mps = get(id)
+    dia_inicio = mps.inicio
+    dia_final = mps.fin
+    dias:timedelta = dia_final - dia_inicio
+    semanas = int(dias.days/7) + 1
+    dias_semana_iso = [dia_inicio+timedelta(days=i*7) for i in range(0, semanas)]
+    semanas_iso = [f'{fecha.year}-W{fecha.isocalendar()[1]}' for fecha in dias_semana_iso]
+
+    productos_registrados_subquery = (db.session
+                                      .query(PlanMaestroProduccionProductos.producto_id)
+                                      .filter(PlanMaestroProduccionProductos.mps_id == id))
+
+    query = Producto.query
+
+    query = query.filter(Producto.id.in_(productos_registrados_subquery))
+
+    productos = query.all()
+
+    # flash(semanas_iso)
+    # flash(productos)
+    return render_template('mps/product_demand.html', dato=mps, semanas=semanas_iso, productos=productos)
 
 @bp.route('/delete/<int:id>', methods=['GET', 'POST'])
 def delete(id):

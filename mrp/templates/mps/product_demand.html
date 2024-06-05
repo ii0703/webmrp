@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>Registro de las demandas de productos</h3>
+<form>
+    <table class="table table-striped table-hover">
+
+        <tr>
+            <th>&nbsp;</th>
+            {% for semana in semanas %}
+            <th class="text-center">{{semana}}</th>
+            {% endfor %}
+        </tr>
+        {% for producto in productos %}
+        <tr>
+            <td>{{producto.nombre}}</td>
+            {% for semana in semanas %}
+            <td class="text-center">
+                <input type="number"
+                       id="d-{{producto.nombre}}-{{semana}}"
+                       name="d-{{producto.nombre}}-{{semana}}"
+                       value="0"
+                       required>
+
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+
+    </table>
+    <div class="form-group row my-2">
+        <div class="col text-center">
+            <input type="submit" class="btn btn-primary" value="Guardar">
+        </div>
+        <div class="col text-center">
+            <a href="{{ url_for('mps.view',id=dato.id)}}" class="btn btn-danger">Regresar</a>
+        </div>
+    </div>
+</form>
+
+{% endblock%}

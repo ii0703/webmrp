@@ -99,7 +99,14 @@
 
         </tbody>
     </table>
-
+    <div class="row my-2">
+        <div class="col text-center">
+            <a class="btn btn-secondary"
+               href="{{ url_for('mps.product_demand',id=dato.id)}}">
+                Registrar demandas
+            </a>
+        </div>
+    </div>
     {% endif %}
 
     <!--    <div class="row mt-4">-->
@@ -115,7 +122,7 @@
     <!--    </div>-->
     <div class="row my-2">
         <div class="col text-center">
-            <a class="btn btn-secondary"
+            <a class="btn btn-danger"
                href="{{ url_for('mps.index')}}">
                 Regresar al listado
             </a>

@@ -145,7 +145,7 @@ class Producto(db.Model):
 
 
     def __repr__(self):
-        return f'<Producto: "{self.simbolo} - {self.nombre}">'
+        return f'<Producto: "{self.sku} - {self.nombre}">'
 
 
 class ProductoLote(db.Model):
