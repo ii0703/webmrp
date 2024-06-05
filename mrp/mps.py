@@ -296,7 +296,7 @@ def product_add(id):
 
     return render_template('mps/product_add.html', dato=mps, codigo=codigo, nombre=nombre, productos=productos, productos_relacionados=productos_relacionados)
 
-@bp.route('/product_demand/<int:id>')
+@bp.route('/product_demand/<int:id>', methods=['GET', 'POST'])
 @login_required
 def product_demand(id):
     mps = get(id)
@@ -317,9 +317,18 @@ def product_demand(id):
 
     productos = query.all()
 
-    # flash(semanas_iso)
-    # flash(productos)
-    return render_template('mps/product_demand.html', dato=mps, semanas=semanas_iso, productos=productos)
+    form_data = {}
+    if request.method == 'POST':
+        form_data = request.form
+        for key in form_data:
+            if key.startswith('d-'):
+                k, producto_id, year,week = key.split('-')
+                week_iso = '{}-{}'.format(year,week)
+                flash('{} {} {}'.format(producto_id, week_iso, form_data.get(key)))
+
+        # flash(form_data)
+
+    return render_template('mps/product_demand.html', dato=mps, semanas=semanas_iso, productos=productos, form_data=form_data)
 
 @bp.route('/delete/<int:id>', methods=['GET', 'POST'])
 def delete(id):

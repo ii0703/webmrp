@@ -2,7 +2,7 @@
 
 {% block content %}
 <h3>Registro de las demandas de productos</h3>
-<form>
+<form method="post">
     <table class="table table-striped table-hover">
 
         <tr>
@@ -17,9 +17,9 @@
             {% for semana in semanas %}
             <td class="text-center">
                 <input type="number"
-                       id="d-{{producto.nombre}}-{{semana}}"
-                       name="d-{{producto.nombre}}-{{semana}}"
-                       value="0"
+                       id="d-{{producto.id}}-{{semana}}"
+                       name="d-{{producto.id}}-{{semana}}"
+                       value="{{ form_data.get('d-{}-{}'.format(producto.id, semana),0) }}"
                        required>
 
             </td>
