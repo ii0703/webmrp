@@ -22,9 +22,9 @@
                 <label for="inicio">Inicio estimado</label>
             </div>
             <div class="col-9">
-                <input type="date" class="form-control"
+                <input type="week" class="form-control"
                        id="inicio" name="inicio"
-                       min="{{inicio}}" value="{{dato.inicio.strftime('%Y-%m-%d')}}"
+                       min="{{ inicio }}" value="{{ inicio }}"
                        required>
             </div>
         </div>
@@ -34,9 +34,9 @@
                 <label for="final">Final estimado</label>
             </div>
             <div class="col-9">
-                <input type="date" class="form-control"
+                <input type="week" class="form-control"
                        id="final" name="final"
-                       min="{{dato.inicio.strftime('%Y-%m-%d')}}" value="{{dato.fin.strftime('%Y-%m-%d')}}"
+                       min="{{ inicio }}" value="{{ final }}"
                        required>
             </div>
         </div>

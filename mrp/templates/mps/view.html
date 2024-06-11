@@ -28,7 +28,7 @@
                         Inicio esperado
                     </dt>
                     <dd class="col-sm-7">
-                        {{dato.inicio.strftime('%Y-%m-%d')}}
+                        {{inicio}}
                     </dd>
                 </div>
                 <div class="row">
@@ -36,7 +36,7 @@
                         Final esperado
                     </dt>
                     <dd class="col-sm-7">
-                        {{dato.fin.strftime('%Y-%m-%d')}}
+                        {{final}}
                     </dd>
                 </div>
                 <div class="row">
@@ -74,20 +74,74 @@
             </div>
         </div>
     </div>
-    <!--    <div class="row mt-4">-->
-    <!--        <div class="col">-->
-    <!--            <h3>Detalles del Producto</h3>-->
-    <!--            <ul class="list-group">-->
-    <!--                <li class="list-group-item"><strong>Material:</strong> Plástico</li>-->
-    <!--                <li class="list-group-item"><strong>Dimensiones:</strong> 10cm x 5cm x 3cm</li>-->
-    <!--                <li class="list-group-item"><strong>Peso:</strong> 200g</li>-->
-    <!--                <li class="list-group-item"><strong>Color:</strong> Negro</li>-->
-    <!--            </ul>-->
-    <!--        </div>-->
-    <!--    </div>-->
+
+    {% if productos_relacionados %}
+    <h3>Productos relacionados</h3>
+
+    <table class="table table-striped table-hover">
+
+        <thead>
+        <tr>
+            <th>SKU</th>
+            <th>Nombre</th>
+            <th>Categoría</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for result in productos_relacionados %}
+        <tr>
+
+            <td>{{ result.sku }}</td>
+            <td>{{ result.nombre }}</td>
+            <td>{{ result.categoria_producto.nombre }}</td>
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
     <div class="row my-2">
         <div class="col text-center">
             <a class="btn btn-secondary"
+               href="{{ url_for('mps.product_demand',id=dato.id)}}">
+                Registrar demandas
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if demandas %}
+    <h3>Demandas registradas</h3>
+    <table class="table table-striped table-hover">
+
+        <thead>
+        <tr>
+            <th class="text-center">Producto</th>
+            {% for semana in semanas: %}
+            <th class="text-center">{{semana}}</th>
+            {% endfor%}
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for producto in productos_relacionados %}
+        <tr>
+            <td>{{ producto.nombre }}</td>
+            {% for semana in semanas: %}
+            <td class="text-center">{{demandas.get((producto.id, semana)).cantidad}}</td>
+            {% endfor%}
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+    {% endif %}
+
+
+    <div class="row my-2">
+        <div class="col text-center">
+            <a class="btn btn-danger"
                href="{{ url_for('mps.index')}}">
                 Regresar al listado
             </a>

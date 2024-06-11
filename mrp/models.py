@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column
 from datetime import datetime, date
 from typing import Optional
 
+
 class Usuario(db.Model):
     __tablename__ = 'usuarios'
 
@@ -13,9 +14,9 @@ class Usuario(db.Model):
     password: Mapped[str] = mapped_column(Text)
     nombre: Mapped[str] = mapped_column(String(60))
 
-
     def __repr__(self):
         return f'<Usuario: "{self.username} - {self.nombre}">'
+
 
 class Lugar(db.Model):
     __tablename__ = 'lugares'
@@ -143,9 +144,8 @@ class Producto(db.Model):
     esta_activo: Mapped[bool] = mapped_column(Boolean, default=True)
     lotes: Mapped[list['ProductoLote']] = relationship(back_populates='producto')
 
-
     def __repr__(self):
-        return f'<Producto: "{self.simbolo} - {self.nombre}">'
+        return f'<Producto: "{self.sku} - {self.nombre}">'
 
 
 class ProductoLote(db.Model):
@@ -294,7 +294,7 @@ class ListaMateriales(db.Model):
     materias_primas: Mapped[list['ListaMaterialesMateriasPrimas']] = relationship(back_populates='lista_materiales')
 
     def __repr__(self):
-        principal:str = 'Principal' if self.es_receta_principal else 'Alternativo'
+        principal: str = 'Principal' if self.es_receta_principal else 'Alternativo'
         return f'<ListaMateriales: "{self.producto.nombre} - {principal}">'
 
 
@@ -345,13 +345,11 @@ class PlanMaestroProduccion(db.Model):
     nombre: Mapped[str] = mapped_column(String(100))
     inicio: Mapped[Optional[datetime]] = mapped_column(DateTime)
     fin: Mapped[Optional[datetime]] = mapped_column(DateTime)
-    esta_finalizado:Mapped[bool] = mapped_column(Boolean, default=False)
+    esta_finalizado: Mapped[bool] = mapped_column(Boolean, default=False)
     productos: Mapped[list['PlanMaestroProduccionProductos']] = relationship(back_populates='mps')
-    
 
     def __repr__(self):
         return f'<PlanMaestroProduccion: "{self.nombre}">'
-
 
 
 class PlanMaestroProduccionProductos(db.Model):
@@ -362,7 +360,21 @@ class PlanMaestroProduccionProductos(db.Model):
     mps: Mapped['PlanMaestroProduccion'] = relationship()
     producto_id: Mapped[int] = mapped_column(Integer, ForeignKey('productos.id'))
     producto: Mapped['Producto'] = relationship()
-    
 
     def __repr__(self):
-        return f'<PlanMaestroProduccionProductos: "{self.id} - {self.nombre}">'
+        return f'<PlanMaestroProduccionProductos: "{self.id}">'
+
+
+class PlanMaestroProduccionDemandas(db.Model):
+    __tablename__ = 'planes_maestros_producciones_demandas'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    mps_id: Mapped[int] = mapped_column(Integer, ForeignKey('planes_maestros_producciones.id'))
+    mps: Mapped['PlanMaestroProduccion'] = relationship()
+    producto_id: Mapped[int] = mapped_column(Integer, ForeignKey('productos.id'))
+    producto: Mapped['Producto'] = relationship()
+    semana: Mapped['str'] = mapped_column(String(10))
+    cantidad: Mapped[float] = mapped_column(Double, default=0.0)
+
+    def __repr__(self):
+        return f'<PlanMaestroProduccionDemandas: "{self.id}">'
