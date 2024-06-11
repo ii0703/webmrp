@@ -85,7 +85,7 @@ def csv_export_all():
     file_output = StringIO()
     csv_writer = csv.writer(file_output, delimiter=',',
                             quoting=csv.QUOTE_ALL)
-    csv_writer.writerow(['Identificación', 'Nombre', 'Lugar', 'Correo electrónico', 'Teléfono', 'Tipo', 'Estado'])
+    csv_writer.writerow(['Código', 'Nombre', 'Estado'])
     datos = CategoriaMateriaPrima.query.order_by(CategoriaMateriaPrima.nombre.desc()).all()
     csv_items = [[dato.identificacion, dato.nombre, dato.lugar.nombre, dato.correo_electronico, dato.telefono,
                   'Persona física' if dato.es_persona_fisica else 'Empresa',
@@ -103,15 +103,15 @@ def csv_export_all():
 def csv_template():
     # @stream_with_context
     # def generate():
-    #     yield str.encode('Identificación, Nombre, Lugar, Correo electrónico, Teléfono, Tipo, Estado', 'utf-8')
+    #     yield str.encode('Código', 'Nombre', 'Estado', 'utf-8')
 
     # response = Response(generate())
     ##
     file_output = StringIO()
     csv_writer = csv.writer(file_output, delimiter=',',
                             quoting=csv.QUOTE_ALL)
-    csv_writer.writerow(['Identificación', 'Nombre', 'Lugar', 'Correo electrónico', 'Teléfono', 'Tipo', 'Estado'])
-    csv_items = [['Identificación', 'Nombre', 'Lugar', 'Correo electrónico', 'Teléfono', 'Tipo', 'Estado']]
+    csv_writer.writerow(['Código', 'Nombre', 'Estado'])
+    csv_items = [['Código', 'Nombre', 'Estado']]
     for item in csv_items:
         csv_writer.writerow(item)
     file_output.seek(0)
