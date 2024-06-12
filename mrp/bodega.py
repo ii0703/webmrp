@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, g, abort
-from flask import (send_file, stream_with_context, Response)
+from flask import (send_file, stream_with_context, Response, flash)
 from io import BytesIO, StringIO
 import csv
 from mrp.auth import login_required
@@ -36,10 +36,57 @@ def decode_utf8(input_iterator):
 def csv_import_all():
     if request.method == 'POST':
         file = request.files['file']
-        reader = csv.DictReader(decode_utf8(file))
+        reader = csv.DictReader(decode_utf8(file),
+                                fieldnames=['codigo', 'nombre', 'lugar', 'estado'],
+                                delimiter=';')
+        # para saltar la primera línea del encabezado, dado que yo le mando los nombre
+        next(reader)
+        # Cargo todos los lugares existentes, por si existe un código previamente ignoralo
+        lista_lugares = Lugar.query.all()
+        # convierto la lista en un diccionario (el código debe ser único)
+        dict_lugares = {lugar.codigo: lugar for lugar in lista_lugares}
+
+        # Cargo todos los lugares existentes, por si existe un código previamente ignoralo
+        lista_bodegas = Bodega.query.all()
+        # convierto la lista en un diccionario (el código debe ser único)
+        dict_bodegas = {bodega.codigo: bodega for bodega in lista_bodegas}
+
+        nuevos = 0
+        existentes = 0
+        sin_lugar = 0
+
+
+
         for row in reader:
-            print(row)
+            if row['lugar'] in dict_lugares:
+                lugar = dict_lugares[row['lugar']]
+                if row['codigo'] in dict_bodegas:
+                    existentes = existentes + 1
+                else:
+                    nuevos = nuevos + 1
+                    codigo = str(row['codigo'].strip())
+                    nombre = row['nombre']
+                    esta_activo = row['estado'].lstrip().lower() == 'activo'
+                    # flash('{} {} {}'.format(codigo, nombre, esta_activo))
+                    bodega = Bodega(codigo=codigo,
+                                    nombre=nombre,
+                                    esta_activo=esta_activo,
+                                    lugar=lugar)
+
+                    db.session.add(bodega)
+            else:
+                sin_lugar = sin_lugar + 1
+
+        if nuevos > 0:
+            db.session.commit()
+            flash('Datos nuevos {}'.format(nuevos))
+        if existentes > 0:
+            flash('Datos existentes: {}'.format(existentes))
+        if sin_lugar > 0:
+            flash('Datos que no se pudieron registrar porque no tenían sitio registrado: {}'.format(existentes))
+
         return redirect(url_for('bodega.index'))
+
     return '''
 <!DOCTYPE html>
 <html lang="en">
@@ -85,10 +132,9 @@ def csv_export_all():
     file_output = StringIO()
     csv_writer = csv.writer(file_output, delimiter=',',
                             quoting=csv.QUOTE_ALL)
-    csv_writer.writerow(['Identificación', 'Nombre', 'Lugar', 'Correo electrónico', 'Teléfono', 'Tipo', 'Estado'])
+    csv_writer.writerow(['Código', 'Nombre', 'Lugar', 'Estado'])
     datos = Bodega.query.order_by(Bodega.nombre.desc()).all()
-    csv_items = [[dato.identificacion, dato.nombre, dato.lugar.nombre, dato.correo_electronico, dato.telefono,
-                  'Persona física' if dato.es_persona_fisica else 'Empresa',
+    csv_items = [[dato.codigo, dato.nombre, dato.lugar.codigo,
                   'Activo' if dato.esta_activo else 'Inactivo'] for dato in datos]
     for item in csv_items:
         csv_writer.writerow(item)
@@ -110,8 +156,8 @@ def csv_template():
     file_output = StringIO()
     csv_writer = csv.writer(file_output, delimiter=',',
                             quoting=csv.QUOTE_ALL)
-    csv_writer.writerow(['Identificación', 'Nombre', 'Lugar', 'Correo electrónico', 'Teléfono', 'Tipo', 'Estado'])
-    csv_items = [['Identificación', 'Nombre', 'Lugar', 'Correo electrónico', 'Teléfono', 'Tipo', 'Estado']]
+    csv_writer.writerow(['Código', 'Nombre', 'Lugar', 'Estado'])
+    csv_items = [['', '', '', '']]
     for item in csv_items:
         csv_writer.writerow(item)
     file_output.seek(0)

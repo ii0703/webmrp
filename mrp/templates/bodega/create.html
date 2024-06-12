@@ -13,7 +13,7 @@
                 <select class="form-select form-select-sm mb-3"
                         id="lugar" name="lugar">
                     {%for lugar in lugares%}
-                    <option value="{{lugar.id}}"> {{lugar.nombre}}
+                    <option value="{{lugar.id}}"> {{lugar.codigo}} - {{lugar.nombre}}
                     </option>
                     {%endfor%}
                 </select>

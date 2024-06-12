@@ -14,7 +14,7 @@
                         id="lugar" name="lugar">
                     {%for lugar in lugares%}
                     <option value="{{lugar.id}}" {%if dato.lugar.id == lugar.id%} selected {%endif%}>
-                        {{lugar.nombre}}
+                        {{lugar.codigo}} - {{lugar.nombre}}
                     </option>
                     {%endfor%}
                 </select>
