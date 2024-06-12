@@ -94,7 +94,7 @@ def csv_import_all():
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>File Upload Example</title>
+	<title>Importar bodegas</title>
 	<style>
 	.ok{
 
@@ -114,7 +114,7 @@ def csv_import_all():
 </head>
 <body>
 	<div class="center">
-		<h1> Uploading and Returning Files With a Database in Flask </h1>
+		<h1>Subir bodegas</h1>
 		<form method="POST" enctype="multipart/form-data">
 			<input class="ok" type="file" name="file">
 			<button class="op">Submit</button>

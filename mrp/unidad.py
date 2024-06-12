@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, g, abort
-from flask import (send_file, stream_with_context, Response)
+from flask import (send_file, stream_with_context, Response, flash)
 from io import BytesIO, StringIO
 import csv
 from mrp.auth import login_required
@@ -36,9 +36,54 @@ def decode_utf8(input_iterator):
 def csv_import_all():
     if request.method == 'POST':
         file = request.files['file']
-        reader = csv.DictReader(decode_utf8(file))
+        reader = csv.DictReader(decode_utf8(file),
+                                fieldnames=['simbolo', 'nombre', 'estado','tipo'],
+                                delimiter=';')
+        # para saltar la primera línea del encabezado, dado que yo le mando los nombre
+        next(reader)
+        # Cargo todos los tipos_unidades existentes, por si existe un código previamente ignoralo
+        lista_tipos_unidades = TipoUnidad.query.all()
+        # convierto la lista en un diccionario (el código debe ser único)
+        dict_tipos_unidades = {tipo_unidad.codigo: tipo_unidad.id for tipo_unidad in lista_tipos_unidades}
+
+        # Cargo todos los unidades existentes, por si existe un código previamente ignoralo
+        lista_unidades = Unidad.query.all()
+        # convierto la lista en un diccionario (el código debe ser único)
+        dict_unidades = {unidad.simbolo: unidad for unidad in lista_unidades}
+
+        nuevos = 0
+        existentes = 0
+        sin_tipo = 0
+
         for row in reader:
-            print(row)
+            if row['tipo'] in dict_tipos_unidades:
+                tipo_unidad = dict_tipos_unidades[row['tipo']]
+
+                if row['simbolo'] in dict_unidades:
+                    existentes = existentes + 1
+                else:
+                    nuevos = nuevos + 1
+                    simbolo = row['simbolo'].strip()
+                    nombre = row['nombre']
+                    esta_activo = row['estado'].lstrip().lower() == 'activo'
+
+                    unidad = Unidad(simbolo=simbolo,
+                                    nombre=nombre,
+                                    esta_activo=esta_activo,
+                                    tipo_unidad_id=tipo_unidad)
+
+                    db.session.add(unidad)
+            else:
+                sin_tipo = sin_tipo + 1
+
+        if nuevos > 0:
+            db.session.commit()
+            flash('Datos nuevos {}'.format(nuevos))
+        if existentes > 0:
+            flash('Datos existentes: {}'.format(existentes))
+        if sin_tipo > 0:
+            flash('Datos que no se pudieron registrar porque no tenían tipo de unidad registrado: {}'.format(existentes))
+
         return redirect(url_for('unidad.index'))
     return '''
 <!DOCTYPE html>
@@ -47,7 +92,7 @@ def csv_import_all():
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>File Upload Example</title>
+	<title>Importar unidades</title>
 	<style>
 	.ok{
 
@@ -67,7 +112,7 @@ def csv_import_all():
 </head>
 <body>
 	<div class="center">
-		<h1> Uploading and Returning Files With a Database in Flask </h1>
+		<h1>Importar unidades</h1>
 		<form method="POST" enctype="multipart/form-data">
 			<input class="ok" type="file" name="file">
 			<button class="op">Submit</button>
@@ -110,8 +155,8 @@ def csv_template():
     file_output = StringIO()
     csv_writer = csv.writer(file_output, delimiter=',',
                             quoting=csv.QUOTE_ALL)
-    csv_writer.writerow(['Identificación', 'Nombre', 'Lugar', 'Correo electrónico', 'Teléfono', 'Tipo', 'Estado'])
-    csv_items = [['Identificación', 'Nombre', 'Lugar', 'Correo electrónico', 'Teléfono', 'Tipo', 'Estado']]
+    csv_writer.writerow(['Símbolo', 'Nombre', 'Estado', 'Tipo de Unidad'])
+    csv_items = [['', '', '', '']]
     for item in csv_items:
         csv_writer.writerow(item)
     file_output.seek(0)

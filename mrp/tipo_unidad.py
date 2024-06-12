@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, g, abort
-from flask import (send_file, stream_with_context, Response)
+from flask import (send_file, stream_with_context, Response, flash)
 from io import BytesIO, StringIO
 import csv
 from mrp.auth import login_required
@@ -36,9 +36,34 @@ def decode_utf8(input_iterator):
 def csv_import_all():
     if request.method == 'POST':
         file = request.files['file']
-        reader = csv.DictReader(decode_utf8(file))
+        reader = csv.DictReader(decode_utf8(file),
+                                fieldnames=['codigo', 'nombre', 'estado'],
+                                delimiter=';')
+        # para saltar la primera línea del encabezado, dado que yo le mando los nombre
+        next(reader)
+        # Cargo todos los lugares existentes, por si existe un código previamente ignoralo
+        lista_tipo_unidades = TipoUnidad.query.all()
+        # convierto la lista en un diccionario (el código debe ser único)
+        dict_tipo_unidades = {tipo_unidad.codigo: tipo_unidad for tipo_unidad in lista_tipo_unidades}
+
+        nuevos = 0
+        existentes = 0
+
         for row in reader:
-            print(row)
+            if row['codigo'] in dict_tipo_unidades:
+                existentes = existentes + 1
+            else:
+                lugar = TipoUnidad(codigo=row['codigo'], nombre=row['nombre'],
+                              esta_activo=row['estado'].lstrip().lower() == 'activo')
+                db.session.add(lugar)
+
+                nuevos = nuevos + 1
+
+        if nuevos > 0:
+            db.session.commit()
+            flash('Datos nuevos {}'.format(nuevos))
+        if existentes > 0:
+            flash('Datos existentes: {}'.format(existentes))
         return redirect(url_for('tipo_unidad.index'))
     return '''
 <!DOCTYPE html>
@@ -47,7 +72,7 @@ def csv_import_all():
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>File Upload Example</title>
+	<title>Importar tipos de unidades</title>
 	<style>
 	.ok{
 
@@ -67,7 +92,7 @@ def csv_import_all():
 </head>
 <body>
 	<div class="center">
-		<h1> Uploading and Returning Files With a Database in Flask </h1>
+		<h1>Importar tipos de unidades</h1>
 		<form method="POST" enctype="multipart/form-data">
 			<input class="ok" type="file" name="file">
 			<button class="op">Submit</button>

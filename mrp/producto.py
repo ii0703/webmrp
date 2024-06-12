@@ -47,7 +47,7 @@ def csv_import_all():
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>File Upload Example</title>
+	<title>Importar productos</title>
 	<style>
 	.ok{
 
@@ -67,7 +67,7 @@ def csv_import_all():
 </head>
 <body>
 	<div class="center">
-		<h1> Uploading and Returning Files With a Database in Flask </h1>
+		<h1>Importar productos</h1>
 		<form method="POST" enctype="multipart/form-data">
 			<input class="ok" type="file" name="file">
 			<button class="op">Submit</button>
@@ -110,8 +110,13 @@ def csv_template():
     file_output = StringIO()
     csv_writer = csv.writer(file_output, delimiter=',',
                             quoting=csv.QUOTE_ALL)
-    csv_writer.writerow(['Identificación', 'Nombre', 'Tipo', 'Estado'])
-    csv_items = [['Identificación', 'Nombre', 'Tipo', 'Estado']]
+    csv_writer.writerow(
+        ['SKU', 'Nombre', 'Categoria producto', 'unidad', 'cantidad total', 'cantidad disponible', 'cantidad reservado',
+         'costo', 'porcentaje impuesto', 'redondeo', 'utilildad es porcentaje', 'porcentaje utilidad', 'monto utilidad',
+         'Estado'])
+    csv_items = [['SKU', 'Nombre', 'Categoria producto', 'unidad', 'cantidad total', 'cantidad disponible', 'cantidad reservado',
+         'costo', 'porcentaje impuesto', 'redondeo', 'utilildad es porcentaje', 'porcentaje utilidad', 'monto utilidad',
+         'Estado']]
     for item in csv_items:
         csv_writer.writerow(item)
     file_output.seek(0)
@@ -146,8 +151,6 @@ def create():
         porcentaje_utilidad = request.form['utilidad-porcentaje']
         monto_utilidad = request.form['utilidad-monto']
 
-
-
         producto = Producto(sku=sku,
                             nombre=nombre,
                             categoria_producto_id=categoria_producto_id,
@@ -181,7 +184,7 @@ def create():
         finally:
             db.session.close()
 
-        return redirect(url_for('producto.view',id=id))
+        return redirect(url_for('producto.view', id=id))
 
     return render_template('producto/create.html', categorias_producto=categorias_producto, unidades=unidades)
 
@@ -216,7 +219,7 @@ def update(id):
 
         db.session.commit()
 
-        return redirect(url_for('producto.view',id=id))
+        return redirect(url_for('producto.view', id=id))
 
     return render_template('producto/update.html', dato=producto, categorias_producto=categorias_producto,
                            unidades=unidades)
