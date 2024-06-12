@@ -21,6 +21,7 @@ def get(id):
 def index():
     pagina = request.args.get('pagina', 1, type=int)
     busqueda = request.args.get('busqueda', '', type=str)
+    
     if busqueda == '':
         datos = db.paginate(db.select(Cliente).order_by(Cliente.nombre.desc()), per_page=5, page=pagina)
     else:
