@@ -269,10 +269,64 @@ def mps_nivelador(productos, capacidad_actual, N): #aquí la función mps_nivela
 @login_required
 def calcular_nivelado(id):
     mps = get(id)
-    for x in mps.productos:
-        flash(x.producto.cantidad_disponible)
+    n = len(mps.productos)
 
-    return render_template('mps/leveled_mps.html')
+    inventario_inicio = {}
+    for producto_mps in mps.productos:
+        # poner porcentaja inventario de seguridad en producto
+        inventario_inicio[producto_mps.producto] = calcular_inventario_inicial_neto(producto_mps.producto.cantidad_total,producto_mps.producto.scrap_almacenamiento/100)
+
+    flash(inventario_inicio)
+
+    # ajustar_plan_produccion_nivelado
+
+    flash('n = {}'.format(n))
+    for x in mps.productos:
+        flash('{} {}'.format(x.producto.nombre, x.producto.cantidad_total))
+
+    productos_relacionado_subquery = (db.session
+                                      .query(PlanMaestroProduccionProductos.producto_id)
+                                      .filter(PlanMaestroProduccionProductos.mps_id == id))
+    productos_relacionados = Producto.query.filter(Producto.id.in_(productos_relacionado_subquery)).all()
+
+    query_demandas = PlanMaestroProduccionDemandas.query
+    query_demandas = query_demandas.filter(PlanMaestroProduccionDemandas.mps_id == id)
+    demandas = query_demandas.all()
+
+    dict_productos = {}
+
+    for demanda in demandas:
+        if demanda.producto in dict_productos:
+            dict_productos[demanda.producto].append((demanda.semana, demanda.cantidad))
+        else:
+            dict_productos[demanda.producto] = [(demanda.semana, demanda.cantidad)]
+
+    lista_plan_produccion_nivelado = {}
+    for k, lista_semana_demandas in dict_productos.items():
+        valores_demandas = [x[1] for x  in lista_semana_demandas]
+        flash('test {} {}'.format(k, valores_demandas))
+        #falta inventario de seguridad
+        lista_plan_produccion_nivelado[k] = ajustar_plan_produccion_nivelado(valores_demandas, inventario_inicio[k], 100, n, 1 - (k.scrap_produccion/100))
+
+    flash('lista_plan_produccion_nivelado {}'.format(lista_plan_produccion_nivelado))
+
+
+    flash(dict_productos)
+
+
+
+
+    dict_demandas = {(demanda.producto_id, demanda.semana): demanda for demanda in demandas}
+
+    query_semanas = (db.session.query(PlanMaestroProduccionDemandas.semana)
+                     .filter(PlanMaestroProduccionDemandas.mps_id == id)
+                     .order_by(PlanMaestroProduccionDemandas.semana.asc())
+                     .distinct())
+    semanas = [semana[0] for semana in query_semanas.all()]
+    flash('Cantidad de periodos {}'.format(len(semanas)))
+
+
+    return render_template('mps/leveled_mps.html', lista_plan_produccion_nivelado=lista_plan_produccion_nivelado)
 
 
 @bp.route('/update/<int:id>', methods=['GET', 'POST'])

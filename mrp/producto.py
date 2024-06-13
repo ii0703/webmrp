@@ -102,17 +102,6 @@ def csv_import_all():
                         db.session.add(producto)
                 else:
                     sin_unidad = sin_unidad + 1
-                    # nuevos = nuevos + 1
-                    # simbolo = row['simbolo'].strip()
-                    # nombre = row['nombre']
-                    # esta_activo = row['estado'].lstrip().lower() == 'activo'
-                    #
-                    # unidad = Unidad(simbolo=simbolo,
-                    #                 nombre=nombre,
-                    #                 esta_activo=esta_activo,
-                    #                 tipo_unidad_id=tipo_unidad)
-                    #
-                    # db.session.add(unidad)
             else:
                 sin_categoria = sin_categoria + 1
                 flash(row, 'warning')
