@@ -150,6 +150,9 @@ def create():
         esta_activo = request.form.get('esta-activo') == 'on'
         porcentaje_utilidad = request.form['utilidad-porcentaje']
         monto_utilidad = request.form['utilidad-monto']
+        minutos_produccion = request.form['minutos-produccion']
+        scrap_produccion = request.form['scrap-produccion']
+        scrap_almacenamiento = request.form['scrap-almacenamiento']
 
         producto = Producto(sku=sku,
                             nombre=nombre,
@@ -162,7 +165,10 @@ def create():
                             utilildad_es_porcentaje=utilildad_es_porcentaje,
                             porcentaje_utilidad=porcentaje_utilidad,
                             monto_utilidad=monto_utilidad,
-                            esta_activo=esta_activo
+                            esta_activo=esta_activo,
+                            minutos_produccion=minutos_produccion,
+                            scrap_produccion=scrap_produccion,
+                            scrap_almacenamiento=scrap_almacenamiento
                             )
 
         db.session.add(producto)
@@ -214,6 +220,9 @@ def update(id):
         producto.esta_activo = request.form.get('esta-activo') == 'on'
         producto.porcentaje_utilidad = request.form['utilidad-porcentaje']
         producto.monto_utilidad = request.form['utilidad-monto']
+        producto.minutos_produccion = request.form['minutos-produccion']
+        producto.scrap_produccion = request.form['scrap-produccion']
+        producto.scrap_almacenamiento = request.form['scrap-almacenamiento']        
 
         id: int = producto.id
 

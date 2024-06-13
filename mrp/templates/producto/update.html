@@ -154,6 +154,45 @@
 
         <div class="form-group row my-2">
             <div class="col-3">
+                <label class="form-check-label" for="esta-activo">
+                    Minutos de fabricación por producto
+                </label>
+            </div>
+            <div class="col-9">
+                <input class="form-control" type="number"
+                       id="minutos-produccion" name="minutos-produccion"
+                       required value="{{dato.minutos_produccion}}">
+            </div>
+        </div>
+
+        <div class="form-group row my-2">
+            <div class="col-3">
+                <label class="form-check-label" for="scrap-produccion">
+                    Scrap de producción
+                </label>
+            </div>
+            <div class="col-9">
+                <input class="form-control" type="number"
+                       id="scrap-produccion" name="scrap-produccion"
+                       required value="{{dato.scrap_produccion}}">
+            </div>
+        </div>
+
+        <div class="form-group row my-2">
+            <div class="col-3">
+                <label class="form-check-label" for="scrap-almacenamiento">
+                    Scrap de almacenamiento
+                </label>
+            </div>
+            <div class="col-9">
+                <input class="form-control" type="number"
+                       id="scrap-almacenamiento" name="scrap-almacenamiento"
+                       required value="{{dato.scrap_almacenamiento}}">
+            </div>
+        </div>
+
+        <div class="form-group row my-2">
+            <div class="col-3">
             <label class="form-check-label" for="esta-activo">Estado</label>
             </div>
             <div class="col-9">
