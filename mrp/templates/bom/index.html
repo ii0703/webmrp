@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% import 'macros.html' as macros %}
+
+{% block content %}
+<section class="container-fluid">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top"
+         style="background-color: #e3f2fd;">
+        <div class="container-fluid">
+            <a class=" btn btn btn-success" href="{{url_for('bom.create')}}">Nuevo</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle"
+                           href="#"
+                           role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            CSV
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{url_for('bom.csv_import_all')}}">Importar</a></li>
+                            <li><a class="dropdown-item" href="{{url_for('bom.csv_template')}}">Exportar
+                                template</a></li>
+                            <li><a class="dropdown-item" href="{{url_for('bom.csv_export_all')}}">Exportar
+                                todos los datos</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <form class="d-flex" role="search" method="get">
+                    <input class="form-control me-2"
+                           id="busqueda"
+                           name="busqueda"
+                           type="search"
+                           {% if busqueda== '' %}
+                    placeholder="Digite para buscar"
+                    {% else %}
+                    value = "{{busqueda}}"
+                    {% endif %}
+                    aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Buscar</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <h2>Lista de materiales (BOM)</h2>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th class="col">Consecutivo</th>
+            <th class="col">Nombre</th>
+            <th class="col">Estado</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for dato in datos | reverse %}
+        <tr>
+            <td>
+                <a href="{{url_for('mps.view', id = dato.id)}}"
+                class="btn btn-light btn-sm d-block my-1">
+                    Consecutivo {{dato.id}}</a>
+            </td>
+            <td>
+                {{dato.nombre}}
+            </td>
+            <td>
+                {%if not dato.esta_finalizado %}
+                <span class="text-success">Activo</span>
+                {%else%}
+                <span class="text-danger">Finalizado</span>
+                {%endif%}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+    {{macros.render_pagination(datos,'bom.index',busqueda)}}
+
+
+</section>
+
+
+{% endblock%}
