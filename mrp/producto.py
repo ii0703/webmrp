@@ -85,7 +85,10 @@ def csv_export_all():
     file_output = StringIO()
     csv_writer = csv.writer(file_output, delimiter=',',
                             quoting=csv.QUOTE_ALL)
-    csv_writer.writerow(['Identificación', 'Nombre', 'Tipo', 'Estado'])
+    csv_writer.writerow(
+        ['SKU', 'Nombre', 'Categoría', 'Unidad', 'Cantidad total', 'Cantidad disponible', 'Cantidad reservado', 'Costo',
+         'Porcentaje impuesto', 'Redondeo', 'Modo de cálculo de utilidad', 'Porcentaje utilidad', 'Monto utilidad',
+         'Minutos producción', 'Scrap producción', 'Scrap almacenamiento', 'Estado'])
     datos = Producto.query.order_by(Producto.nombre.desc()).all()
     csv_items = [[dato.identificacion, dato.nombre, dato.lugar.nombre, dato.correo_electronico, dato.telefono,
                   'Persona física' if dato.es_persona_fisica else 'Empresa',
@@ -111,12 +114,13 @@ def csv_template():
     csv_writer = csv.writer(file_output, delimiter=',',
                             quoting=csv.QUOTE_ALL)
     csv_writer.writerow(
-        ['SKU', 'Nombre', 'Categoria producto', 'unidad', 'cantidad total', 'cantidad disponible', 'cantidad reservado',
-         'costo', 'porcentaje impuesto', 'redondeo', 'utilildad es porcentaje', 'porcentaje utilidad', 'monto utilidad',
-         'Estado'])
-    csv_items = [['SKU', 'Nombre', 'Categoria producto', 'unidad', 'cantidad total', 'cantidad disponible', 'cantidad reservado',
-         'costo', 'porcentaje impuesto', 'redondeo', 'utilildad es porcentaje', 'porcentaje utilidad', 'monto utilidad',
-         'Estado']]
+        ['SKU', 'Nombre', 'Categoría', 'Unidad', 'Cantidad total', 'Cantidad disponible', 'Cantidad reservado', 'Costo',
+         'Porcentaje impuesto', 'Redondeo', 'Modo de cálculo de utilidad', 'Porcentaje utilidad', 'Monto utilidad',
+         'Minutos producción', 'Scrap producción', 'Scrap almacenamiento', 'Estado'])
+    csv_items = [
+        ['SKU', 'Nombre', 'Categoría', 'Unidad', 'Cantidad total', 'Cantidad disponible', 'Cantidad reservado', 'Costo',
+         'Porcentaje impuesto', 'Redondeo', 'Modo de cálculo de utilidad', 'Porcentaje utilidad', 'Monto utilidad',
+         'Minutos producción', 'Scrap producción', 'Scrap almacenamiento', 'Estado']]
     for item in csv_items:
         csv_writer.writerow(item)
     file_output.seek(0)
@@ -222,7 +226,7 @@ def update(id):
         producto.monto_utilidad = request.form['utilidad-monto']
         producto.minutos_produccion = request.form['minutos-produccion']
         producto.scrap_produccion = request.form['scrap-produccion']
-        producto.scrap_almacenamiento = request.form['scrap-almacenamiento']        
+        producto.scrap_almacenamiento = request.form['scrap-almacenamiento']
 
         id: int = producto.id
 

@@ -7,6 +7,8 @@ from mrp.auth import login_required
 from .models import PlanMaestroProduccion, Producto, PlanMaestroProduccionProductos, PlanMaestroProduccionDemandas
 from mrp import db
 from sqlite3 import IntegrityError
+import numpy as np
+import pandas as pd
 
 bp = Blueprint('mps', __name__, url_prefix='/mps')
 
@@ -172,6 +174,95 @@ def create():
     finalw_str = f"{final.year}-{final.isocalendar()[1]}"
 
     return render_template('mps/create.html', inicio=hoyw_str, final=finalw_str)
+
+
+# Datos de entrada:aquí se colocan manualmente los datos iniciales para iniciar con el MPS de la cantidad de productos que se necesite
+productos = {
+    'Producto A': {
+        'demanda': [100, 150, 200, 250],
+        'inventario_inicial_bruto': 50,
+        'inventario_seguridad': 20,
+        'porcentaje_desperdicio': 0.1, #% de desperdicio es para el inventario inicial
+        'scrap': 0.05 #% de scrap es del plan de producción
+    },
+    'Producto B': {
+        'demanda': [80, 120, 160, 200],
+        'inventario_inicial_bruto': 60,
+        'inventario_seguridad': 30,
+        'porcentaje_desperdicio': 0.08,
+        'scrap': 0.04
+    }
+}
+
+capacidad_actual = 1000 #meter esto en producto
+N = 4 #meter esto en producto
+
+def calcular_inventario_inicial_neto(inventario_inicial_bruto, porcentaje_desperdicio): #esta función es para calcular el inventario inicial neto con el % de desperdicio respectivo
+    return inventario_inicial_bruto * (1 - porcentaje_desperdicio)
+
+def ajustar_plan_produccion_nivelado(total_demanda, inventario_inicial, inventario_seguridad, N, gamma): #esta función es para calcular el plan de producción con la estrategia nivelador
+    demanda_total = sum(total_demanda)
+    plan_produccion_nivelado = (demanda_total - inventario_inicial + inventario_seguridad) / N
+    plan_produccion_nivelado_con_scrap = np.ceil(plan_produccion_nivelado * gamma) #aquí el np.ceil se utiliza para redondear al siguiente número entero más alto
+    return [plan_produccion_nivelado_con_scrap] * N
+
+def calcular_disponible(inventario_inicial_neto, plan_produccion): #esta función es para calcular el disponible con su respectiva fórmula
+    return inventario_inicial_neto + plan_produccion
+
+def calcular_inventario_final(disponible, demanda): #esta función es para calcular el disponible con su respectiva fórmula
+    return disponible - demanda
+
+def mps_nivelador(productos, capacidad_actual, N): #aquí la función mps_nivelador solo acepta esos 3 argumentos y se crea un diccionario llamado tablas
+    tablas = {}
+
+    for producto, datos in productos.items(): #aquí se está agregando los valores de demanda, inventarios y % de desperdicio y scrap en el diccionario de tablas en la parte de productos
+        demanda = datos['demanda']
+        inventario_inicial_bruto = datos['inventario_inicial_bruto']
+        inventario_seguridad = datos['inventario_seguridad']
+        porcentaje_desperdicio = datos['porcentaje_desperdicio']
+        scrap = datos['scrap']
+
+        gamma = 1 / (1 - scrap) #define que es gamma
+        inventario_inicial_neto = calcular_inventario_inicial_neto(inventario_inicial_bruto, porcentaje_desperdicio)
+
+        tabla = pd.DataFrame(index=['Inventario Inicial Bruto', 'Porcentaje Desperdicio', 'Inventario Inicial Neto', #esto es para poder formar una tabla al final
+                                    'Plan Producción (sin scrap)', 'Scrap Plan Producción', 'Plan Producción (con scrap)',
+                                    'Disponible', 'Demanda', 'Inventario Final'], columns=[f'Periodo {i+1}' for i in range(N)])
+
+        tabla.loc['Inventario Inicial Bruto', 'Periodo 1'] = inventario_inicial_bruto #aquí tabla.loc es para acceder a las filas y columnas que se definieron anteriormente para la tabla
+        tabla.loc['Porcentaje Desperdicio'] = porcentaje_desperdicio
+        tabla.loc['Scrap Plan Producción'] = scrap
+        tabla.loc['Demanda'] = demanda
+
+        plan_produccion_nivelado = ajustar_plan_produccion_nivelado(demanda, inventario_inicial_neto, inventario_seguridad, N, gamma)
+
+        for i in range(N): #
+            if i == 0:
+                inventario_inicial_neto_periodo = inventario_inicial_neto
+            else:
+                inventario_inicial_neto_periodo = tabla.loc['Inventario Final', f'Periodo {i}']
+
+            plan_con_scrap = plan_produccion_nivelado[i]
+            plan_sin_scrap = plan_con_scrap / gamma
+
+            disponible = calcular_disponible(inventario_inicial_neto_periodo, plan_con_scrap)
+            inventario_final_periodo = calcular_inventario_final(disponible, demanda[i])
+
+            tabla.loc['Inventario Inicial Neto', f'Periodo {i+1}'] = inventario_inicial_neto_periodo
+            tabla.loc['Plan Producción (sin scrap)', f'Periodo {i+1}'] = plan_sin_scrap
+            tabla.loc['Plan Producción (con scrap)', f'Periodo {i+1}'] = plan_con_scrap
+            tabla.loc['Disponible', f'Periodo {i+1}'] = disponible
+            tabla.loc['Inventario Final', f'Periodo {i+1}'] = inventario_final_periodo
+
+        tablas[producto] = tabla
+
+    plan_produccion_total_general = sum(tabla.loc['Plan Producción (con scrap)'].sum() for tabla in tablas.values())
+    if plan_produccion_total_general > capacidad_actual: #aquí se presenta la posibilidad de que si el plan de producción es mayor a la capacidad actual definir un factor de ajsute DUDA CON EL PROFE
+        print(f"Advertencia: la capacidad total de producción {plan_produccion_total_general} excede la capacidad actual de {capacidad_actual}.")
+    else:
+        print(f"Plan de producción total general: {plan_produccion_total_general}")
+
+    return tablas
 
 
 @bp.route('/mps_nivelado/<int:id>', methods=['GET', 'POST'])
