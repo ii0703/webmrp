@@ -3,6 +3,13 @@
 ## Proyecto de Ingeniería de Operaciones
 
 ### Tecnologías
-1. Python 3.10+
-2. Flask 3+
-3. SQL-Alchemy 2+
+Para poder correr este proyecto se tiene que instalar primero
+```
+pip install -r .\requirements.txt
+```
+
+
+Para correr el código se debe ejecutar la siguiente línea
+```Python
+python run.py
+```
