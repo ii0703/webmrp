@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, g, abort
-from flask import (send_file, stream_with_context, Response)
+from flask import (send_file, stream_with_context, Response, flash)
 from io import BytesIO, StringIO
 import csv
 from mrp.auth import login_required
@@ -36,9 +36,97 @@ def decode_utf8(input_iterator):
 def csv_import_all():
     if request.method == 'POST':
         file = request.files['file']
-        reader = csv.DictReader(decode_utf8(file))
+        reader = csv.DictReader(decode_utf8(file),
+                                fieldnames=['sku', 'nombre', 'categoria', 'unidad', 'total', 'disponible', 'reservado',
+                                            'costo', 'impuesto', 'redondeo', 'modo', 'p_utilidad', 'm_utilidad',
+                                            'minutos', 'scrap_produccion', 'scrap_almacenamiento', 'estado'],
+                                delimiter=';')
+        # para saltar la primera línea del encabezado, dado que yo le mando los nombre
+        next(reader)
+
+        lista_categoria_productos = CategoriaProducto.query.all()
+        dict_categoria_productos = {categoria_productos.codigo: categoria_productos.id for categoria_productos in
+                                    lista_categoria_productos}
+        # flash(dict_categoria_productos, 'success')
+
+        lista_unidades = Unidad.query.all()
+        dict_unidades = {unidad.simbolo: unidad.id for unidad in lista_unidades}
+
+        lista_productos = Producto.query.all()
+        dict_productos = {producto.sku: producto for producto in lista_productos}
+
+        nuevos = 0
+        existentes = 0
+        sin_categoria = 0
+        sin_unidad = 0
+
         for row in reader:
-            print(row)
+            if row['categoria'] in dict_categoria_productos:
+                categoria_producto = dict_categoria_productos[row['categoria']]
+
+                if row['unidad'] in dict_unidades:
+                    unidad = dict_unidades[row['unidad']]
+                    if row['sku'] in dict_productos:
+                        existentes = existentes + 1
+                    else:
+                        nuevos = nuevos + 1
+                        sku = row['sku']
+                        nombre = row['nombre']
+                        cantidad_total = row['total']
+                        costo = row['costo']
+                        porcentaje_impuesto = row['impuesto']
+                        redondeo = row['redondeo']
+                        utilildad_es_porcentaje = row['modo'].strip().lower() == 'por porcentaje'
+                        esta_activo = row['estado'].strip().lower() == 'activo'
+                        porcentaje_utilidad = row['p_utilidad']
+                        monto_utilidad = row['m_utilidad']
+                        minutos_produccion = row['minutos']
+                        scrap_produccion = row['scrap_produccion']
+                        scrap_almacenamiento = row['scrap_almacenamiento']
+                        producto = Producto(sku=sku,
+                                            nombre=nombre,
+                                            categoria_producto_id=categoria_producto,
+                                            unidad_id=unidad,
+                                            cantidad_total=cantidad_total,
+                                            costo=costo,
+                                            porcentaje_impuesto=porcentaje_impuesto,
+                                            redondeo=redondeo,
+                                            utilildad_es_porcentaje=utilildad_es_porcentaje,
+                                            porcentaje_utilidad=porcentaje_utilidad,
+                                            monto_utilidad=monto_utilidad,
+                                            esta_activo=esta_activo,
+                                            minutos_produccion=minutos_produccion,
+                                            scrap_produccion=scrap_produccion,
+                                            scrap_almacenamiento=scrap_almacenamiento
+                                            )
+                        db.session.add(producto)
+                else:
+                    sin_unidad = sin_unidad + 1
+                    # nuevos = nuevos + 1
+                    # simbolo = row['simbolo'].strip()
+                    # nombre = row['nombre']
+                    # esta_activo = row['estado'].lstrip().lower() == 'activo'
+                    #
+                    # unidad = Unidad(simbolo=simbolo,
+                    #                 nombre=nombre,
+                    #                 esta_activo=esta_activo,
+                    #                 tipo_unidad_id=tipo_unidad)
+                    #
+                    # db.session.add(unidad)
+            else:
+                sin_categoria = sin_categoria + 1
+                flash(row, 'warning')
+
+        if nuevos > 0:
+            db.session.commit()
+            flash('Datos nuevos {}'.format(nuevos))
+        if existentes > 0:
+            flash('Datos existentes: {}'.format(existentes))
+        if sin_categoria > 0:
+            flash('Datos que no se pudieron registrar porque no tenían categoría registrada: {}'.format(sin_categoria))
+        if sin_unidad > 0:
+            flash('Datos que no se pudieron registrar porque no tenían unidad registrada: {}'.format(sin_unidad))
+
         return redirect(url_for('producto.index'))
     return '''
 <!DOCTYPE html>
