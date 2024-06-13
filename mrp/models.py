@@ -143,6 +143,10 @@ class Producto(db.Model):
     fecha_registro: Mapped[date] = mapped_column(Date, default=datetime.now())
     esta_activo: Mapped[bool] = mapped_column(Boolean, default=True)
     lotes: Mapped[list['ProductoLote']] = relationship(back_populates='producto')
+    # minutos_produccion: Mapped[int] = mapped_column(Integer, default=0)
+    # scrap_produccion: Mapped[float] = mapped_column(Double, default=0.0)
+    # scrap_almacenamiento: Mapped[float] = mapped_column(Double, default=0.0)
+
 
     def __repr__(self):
         return f'<Producto: "{self.sku} - {self.nombre}">'

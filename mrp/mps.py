@@ -174,6 +174,16 @@ def create():
     return render_template('mps/create.html', inicio=hoyw_str, final=finalw_str)
 
 
+@bp.route('/mps_nivelado/<int:id>', methods=['GET', 'POST'])
+@login_required
+def calcular_nivelado(id):
+    mps = get(id)
+    for x in mps.productos:
+        flash(x.producto.cantidad_disponible)
+
+    return render_template('mps/leveled_mps.html')
+
+
 @bp.route('/update/<int:id>', methods=['GET', 'POST'])
 @login_required
 def update(id):
