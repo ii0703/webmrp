@@ -2,15 +2,44 @@
 
 {% block content %}
 {% if lista_plan_produccion_nivelado  %}
-<table>
+<h2>Proyecto: {{mps.nombre}}</h2>
+<h3>MPS Nivelado</h3>
+
+<table class="table table-striped table-hover">
+    <tr>
+        <th>Producto</th>
+        {% for semana in semanas %}
+        <th>{{semana}}</th>
+        {% endfor %}
+    </tr>
 {% for producto, demandas in lista_plan_produccion_nivelado.items() %}
 <tr>
-    <td> {{producto.nombre}} </td>
+    <td>
+        <a class="btn btn-light d-block my-1"
+                           href="{{url_for('producto.view', id = producto.id)}}">
+                            {{producto.nombre}}
+                        </a>
+    </td>
     {% for demanda in demandas %}
     <td>{{demanda}}</td>
     {% endfor %}
 </tr>
 {% endfor %}
 </table>
+
+<div class="text-center">
+  <img src='data:image/png;base64,{{data}}'
+       class="rounded" alt="MPS Minutos">
+</div>
 {% endif %}
+    <div class="row my-2">
+        <div class="col text-center">
+            <a class="btn btn-danger"
+               href="{{ url_for('mps.view',id=mps.id)}}">
+                Regresar al listado
+            </a>
+        </div>
+    </div>
+
+
 {% endblock%}

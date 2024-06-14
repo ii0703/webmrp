@@ -9,6 +9,12 @@ from mrp import db
 from sqlite3 import IntegrityError
 import numpy as np
 import pandas as pd
+import io
+import matplotlib.pyplot as plt
+import seaborn as sns
+import base64
+import matplotlib.ticker as mticker
+
 
 bp = Blueprint('mps', __name__, url_prefix='/mps')
 
@@ -176,67 +182,61 @@ def create():
     return render_template('mps/create.html', inicio=hoyw_str, final=finalw_str)
 
 
-# Datos de entrada:aquí se colocan manualmente los datos iniciales para iniciar con el MPS de la cantidad de productos que se necesite
-productos = {
-    'Producto A': {
-        'demanda': [100, 150, 200, 250],
-        'inventario_inicial_bruto': 50,
-        'inventario_seguridad': 20,
-        'porcentaje_desperdicio': 0.1, #% de desperdicio es para el inventario inicial
-        'scrap': 0.05 #% de scrap es del plan de producción
-    },
-    'Producto B': {
-        'demanda': [80, 120, 160, 200],
-        'inventario_inicial_bruto': 60,
-        'inventario_seguridad': 30,
-        'porcentaje_desperdicio': 0.08,
-        'scrap': 0.04
-    }
-}
-
-capacidad_actual = 1000 #meter esto en producto
-N = 4 #meter esto en producto
-
-def calcular_inventario_inicial_neto(inventario_inicial_bruto, porcentaje_desperdicio): #esta función es para calcular el inventario inicial neto con el % de desperdicio respectivo
+def calcular_inventario_inicial_neto(inventario_inicial_bruto,
+                                     porcentaje_desperdicio):  # esta función es para calcular el inventario inicial neto con el % de desperdicio respectivo
     return inventario_inicial_bruto * (1 - porcentaje_desperdicio)
 
-def ajustar_plan_produccion_nivelado(total_demanda, inventario_inicial, inventario_seguridad, N, gamma): #esta función es para calcular el plan de producción con la estrategia nivelador
+
+def ajustar_plan_produccion_nivelado(total_demanda, inventario_inicial, inventario_seguridad, N,
+                                     gamma):  # esta función es para calcular el plan de producción con la estrategia nivelador
     demanda_total = sum(total_demanda)
     plan_produccion_nivelado = (demanda_total - inventario_inicial + inventario_seguridad) / N
-    plan_produccion_nivelado_con_scrap = np.ceil(plan_produccion_nivelado * gamma) #aquí el np.ceil se utiliza para redondear al siguiente número entero más alto
+    plan_produccion_nivelado_con_scrap = np.ceil(
+        plan_produccion_nivelado * gamma)  # aquí el np.ceil se utiliza para redondear al siguiente número entero más alto
     return [plan_produccion_nivelado_con_scrap] * N
 
-def calcular_disponible(inventario_inicial_neto, plan_produccion): #esta función es para calcular el disponible con su respectiva fórmula
+
+def calcular_disponible(inventario_inicial_neto,
+                        plan_produccion):  # esta función es para calcular el disponible con su respectiva fórmula
     return inventario_inicial_neto + plan_produccion
 
-def calcular_inventario_final(disponible, demanda): #esta función es para calcular el disponible con su respectiva fórmula
+
+def calcular_inventario_final(disponible,
+                              demanda):  # esta función es para calcular el disponible con su respectiva fórmula
     return disponible - demanda
 
-def mps_nivelador(productos, capacidad_actual, N): #aquí la función mps_nivelador solo acepta esos 3 argumentos y se crea un diccionario llamado tablas
+
+def mps_nivelador(productos, capacidad_actual,
+                  N):  # aquí la función mps_nivelador solo acepta esos 3 argumentos y se crea un diccionario llamado tablas
     tablas = {}
 
-    for producto, datos in productos.items(): #aquí se está agregando los valores de demanda, inventarios y % de desperdicio y scrap en el diccionario de tablas en la parte de productos
+    for producto, datos in productos.items():  # aquí se está agregando los valores de demanda, inventarios y % de desperdicio y scrap en el diccionario de tablas en la parte de productos
         demanda = datos['demanda']
         inventario_inicial_bruto = datos['inventario_inicial_bruto']
         inventario_seguridad = datos['inventario_seguridad']
         porcentaje_desperdicio = datos['porcentaje_desperdicio']
         scrap = datos['scrap']
 
-        gamma = 1 / (1 - scrap) #define que es gamma
+        gamma = 1 / (1 - scrap)  # define que es gamma
         inventario_inicial_neto = calcular_inventario_inicial_neto(inventario_inicial_bruto, porcentaje_desperdicio)
 
-        tabla = pd.DataFrame(index=['Inventario Inicial Bruto', 'Porcentaje Desperdicio', 'Inventario Inicial Neto', #esto es para poder formar una tabla al final
-                                    'Plan Producción (sin scrap)', 'Scrap Plan Producción', 'Plan Producción (con scrap)',
-                                    'Disponible', 'Demanda', 'Inventario Final'], columns=[f'Periodo {i+1}' for i in range(N)])
+        tabla = pd.DataFrame(index=['Inventario Inicial Bruto', 'Porcentaje Desperdicio', 'Inventario Inicial Neto',
+                                    # esto es para poder formar una tabla al final
+                                    'Plan Producción (sin scrap)', 'Scrap Plan Producción',
+                                    'Plan Producción (con scrap)',
+                                    'Disponible', 'Demanda', 'Inventario Final'],
+                             columns=[f'Periodo {i + 1}' for i in range(N)])
 
-        tabla.loc['Inventario Inicial Bruto', 'Periodo 1'] = inventario_inicial_bruto #aquí tabla.loc es para acceder a las filas y columnas que se definieron anteriormente para la tabla
+        tabla.loc[
+            'Inventario Inicial Bruto', 'Periodo 1'] = inventario_inicial_bruto  # aquí tabla.loc es para acceder a las filas y columnas que se definieron anteriormente para la tabla
         tabla.loc['Porcentaje Desperdicio'] = porcentaje_desperdicio
         tabla.loc['Scrap Plan Producción'] = scrap
         tabla.loc['Demanda'] = demanda
 
-        plan_produccion_nivelado = ajustar_plan_produccion_nivelado(demanda, inventario_inicial_neto, inventario_seguridad, N, gamma)
+        plan_produccion_nivelado = ajustar_plan_produccion_nivelado(demanda, inventario_inicial_neto,
+                                                                    inventario_seguridad, N, gamma)
 
-        for i in range(N): #
+        for i in range(N):  #
             if i == 0:
                 inventario_inicial_neto_periodo = inventario_inicial_neto
             else:
@@ -248,17 +248,18 @@ def mps_nivelador(productos, capacidad_actual, N): #aquí la función mps_nivela
             disponible = calcular_disponible(inventario_inicial_neto_periodo, plan_con_scrap)
             inventario_final_periodo = calcular_inventario_final(disponible, demanda[i])
 
-            tabla.loc['Inventario Inicial Neto', f'Periodo {i+1}'] = inventario_inicial_neto_periodo
-            tabla.loc['Plan Producción (sin scrap)', f'Periodo {i+1}'] = plan_sin_scrap
-            tabla.loc['Plan Producción (con scrap)', f'Periodo {i+1}'] = plan_con_scrap
-            tabla.loc['Disponible', f'Periodo {i+1}'] = disponible
-            tabla.loc['Inventario Final', f'Periodo {i+1}'] = inventario_final_periodo
+            tabla.loc['Inventario Inicial Neto', f'Periodo {i + 1}'] = inventario_inicial_neto_periodo
+            tabla.loc['Plan Producción (sin scrap)', f'Periodo {i + 1}'] = plan_sin_scrap
+            tabla.loc['Plan Producción (con scrap)', f'Periodo {i + 1}'] = plan_con_scrap
+            tabla.loc['Disponible', f'Periodo {i + 1}'] = disponible
+            tabla.loc['Inventario Final', f'Periodo {i + 1}'] = inventario_final_periodo
 
         tablas[producto] = tabla
 
     plan_produccion_total_general = sum(tabla.loc['Plan Producción (con scrap)'].sum() for tabla in tablas.values())
-    if plan_produccion_total_general > capacidad_actual: #aquí se presenta la posibilidad de que si el plan de producción es mayor a la capacidad actual definir un factor de ajsute DUDA CON EL PROFE
-        print(f"Advertencia: la capacidad total de producción {plan_produccion_total_general} excede la capacidad actual de {capacidad_actual}.")
+    if plan_produccion_total_general > capacidad_actual:  # aquí se presenta la posibilidad de que si el plan de producción es mayor a la capacidad actual definir un factor de ajsute DUDA CON EL PROFE
+        print(
+            f"Advertencia: la capacidad total de producción {plan_produccion_total_general} excede la capacidad actual de {capacidad_actual}.")
     else:
         print(f"Plan de producción total general: {plan_produccion_total_general}")
 
@@ -269,25 +270,12 @@ def mps_nivelador(productos, capacidad_actual, N): #aquí la función mps_nivela
 @login_required
 def calcular_nivelado(id):
     mps = get(id)
-    n = len(mps.productos)
 
     inventario_inicio = {}
     for producto_mps in mps.productos:
         # poner porcentaja inventario de seguridad en producto
-        inventario_inicio[producto_mps.producto] = calcular_inventario_inicial_neto(producto_mps.producto.cantidad_total,producto_mps.producto.scrap_almacenamiento/100)
-
-    flash(inventario_inicio)
-
-    # ajustar_plan_produccion_nivelado
-
-    flash('n = {}'.format(n))
-    for x in mps.productos:
-        flash('{} {}'.format(x.producto.nombre, x.producto.cantidad_total))
-
-    productos_relacionado_subquery = (db.session
-                                      .query(PlanMaestroProduccionProductos.producto_id)
-                                      .filter(PlanMaestroProduccionProductos.mps_id == id))
-    productos_relacionados = Producto.query.filter(Producto.id.in_(productos_relacionado_subquery)).all()
+        inventario_inicio[producto_mps.producto] = calcular_inventario_inicial_neto(
+            producto_mps.producto.cantidad_total, producto_mps.producto.scrap_almacenamiento / 100)
 
     query_demandas = PlanMaestroProduccionDemandas.query
     query_demandas = query_demandas.filter(PlanMaestroProduccionDemandas.mps_id == id)
@@ -303,30 +291,50 @@ def calcular_nivelado(id):
 
     lista_plan_produccion_nivelado = {}
     for k, lista_semana_demandas in dict_productos.items():
-        valores_demandas = [x[1] for x  in lista_semana_demandas]
-        flash('test {} {}'.format(k, valores_demandas))
-        #falta inventario de seguridad
-        lista_plan_produccion_nivelado[k] = ajustar_plan_produccion_nivelado(valores_demandas, inventario_inicio[k], 100, n, 1 - (k.scrap_produccion/100))
+        valores_demandas = [x[1] for x in lista_semana_demandas]
+        # falta inventario de seguridad
+        lista_plan_produccion_nivelado[k] = ajustar_plan_produccion_nivelado(valores_demandas,
+                                                                             inventario_inicio[k],
+                                                                             100,
+                                                                             len(valores_demandas),
+                                                                             1 - (k.scrap_produccion / 100))
 
-    flash('lista_plan_produccion_nivelado {}'.format(lista_plan_produccion_nivelado))
-
-
-    flash(dict_productos)
-
-
-
-
-    dict_demandas = {(demanda.producto_id, demanda.semana): demanda for demanda in demandas}
 
     query_semanas = (db.session.query(PlanMaestroProduccionDemandas.semana)
                      .filter(PlanMaestroProduccionDemandas.mps_id == id)
                      .order_by(PlanMaestroProduccionDemandas.semana.asc())
                      .distinct())
     semanas = [semana[0] for semana in query_semanas.all()]
-    flash('Cantidad de periodos {}'.format(len(semanas)))
 
 
-    return render_template('mps/leveled_mps.html', lista_plan_produccion_nivelado=lista_plan_produccion_nivelado)
+    limite = 60*8*5
+
+    # Crear figura y definir estilo de gráfico
+    datos_grafico = {}
+    for producto, demandas in lista_plan_produccion_nivelado.items():
+        datos_grafico[producto.nombre] = [ producto.minutos_produccion * d for d in demandas]
+    fig, ax = plt.subplots()
+
+    ax.stackplot(semanas, datos_grafico.values(),
+                 labels=datos_grafico.keys(), alpha=0.8)
+    ax.axhline(limite, color='red', linestyle='--', label='Capacidad máxima')
+    ax.legend(loc='upper left', reverse=True)
+    ax.set_title('MPS Nivelados en minutos')
+    ax.set_xlabel('Semanas')
+    ax.set_ylabel('Minutos')
+    # add tick at every 200 million people
+    ax.yaxis.set_minor_locator(mticker.MultipleLocator(5000))
+    buf = BytesIO()
+    fig.savefig(buf, format="png")
+
+    data = base64.b64encode(buf.getbuffer()).decode("ascii")
+
+
+    return render_template('mps/leveled_mps.html',
+                           mps=mps,
+                           lista_plan_produccion_nivelado=lista_plan_produccion_nivelado,
+                           semanas=semanas,
+                           data=data)
 
 
 @bp.route('/update/<int:id>', methods=['GET', 'POST'])
@@ -388,14 +396,17 @@ def view(id):
     query_demandas = PlanMaestroProduccionDemandas.query
     query_demandas = query_demandas.filter(PlanMaestroProduccionDemandas.mps_id == id)
     demandas = query_demandas.all()
+
+
     dict_demandas = {(demanda.producto_id, demanda.semana): demanda for demanda in demandas}
 
     query_semanas = (db.session.query(PlanMaestroProduccionDemandas.semana)
                      .filter(PlanMaestroProduccionDemandas.mps_id == id)
                      .order_by(PlanMaestroProduccionDemandas.semana.asc())
                      .distinct())
+
     semanas = [semana[0] for semana in query_semanas.all()]
-    # flash(unique_weeks)
+
 
     inicio = f'{mps.inicio.year}-W{mps.inicio.isocalendar()[1]}'
     final = f'{mps.fin.year}-W{mps.fin.isocalendar()[1]}'
