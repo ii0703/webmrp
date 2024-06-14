@@ -146,6 +146,7 @@ class Producto(db.Model):
     minutos_produccion: Mapped[int] = mapped_column(Integer, default=0)
     scrap_produccion: Mapped[float] = mapped_column(Double, default=0.0)
     scrap_almacenamiento: Mapped[float] = mapped_column(Double, default=0.0)
+    inventario_seguridad: Mapped[float] = mapped_column(Double, default=0.0)
 
 
     def __repr__(self):

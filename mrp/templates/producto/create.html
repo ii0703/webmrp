@@ -76,6 +76,18 @@
 
         <div class="form-group row my-2">
             <div class="col-3">
+                <label for="inventario-seguridad">Inventario de seguridad</label>
+            </div>
+            <div class="col-9">
+                <input type="number" class="form-control"
+                       id="inventario-seguridad" name="inventario-seguridad"
+                       value="0"
+                       required>
+            </div>
+        </div>
+
+        <div class="form-group row my-2">
+            <div class="col-3">
                 <label for="costo">Costo</label>
             </div>
             <div class="col-9">
@@ -173,7 +185,7 @@
                 </label>
             </div>
             <div class="col-9">
-                <input class="form-control" type="number"
+                <input class="form-control" type="number" step="0.01"
                        id="minutos-produccion" name="minutos-produccion">
             </div>
         </div>
@@ -185,7 +197,7 @@
                 </label>
             </div>
             <div class="col-9">
-                <input class="form-control" type="range" min="0" max="100" step="1"
+                <input class="form-control" type="range" min="0" max="100" step="0.01"
                        id="scrap-produccion" name="scrap-produccion">
                 <output for="scrap-produccion">Valor</output>
             </div>
@@ -198,7 +210,7 @@
                 </label>
             </div>
             <div class="col-9">
-                <input class="form-control" type="range" min="0" max="100" step="1"
+                <input class="form-control" type="range" min="0" max="100" step="0.01"
                        id="scrap-almacenamiento" name="scrap-almacenamiento">
             </div>
         </div>

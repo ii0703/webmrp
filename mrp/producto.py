@@ -224,6 +224,7 @@ def create():
         categoria_producto_id = request.form['categoria-producto']
         unidad_id = request.form['unidad']
         cantidad_total = request.form['cantidad-total']
+        inventario_seguridad = request.form['inventario-seguridad']
         costo = request.form['costo']
         porcentaje_impuesto = request.form['porcentaje-impuesto']
         redondeo = request.form['redondeo']
@@ -240,6 +241,7 @@ def create():
                             categoria_producto_id=categoria_producto_id,
                             unidad_id=unidad_id,
                             cantidad_total=cantidad_total,
+                            inventario_seguridad=inventario_seguridad,
                             costo=costo,
                             porcentaje_impuesto=porcentaje_impuesto,
                             redondeo=redondeo,
@@ -293,6 +295,7 @@ def update(id):
         producto.nombre = request.form['nombre']
         producto.unidad_id = request.form['unidad']
         producto.cantidad_total = request.form['cantidad-total']
+        producto.inventario_seguridad = request.form['inventario-seguridad']
         producto.costo = request.form['costo']
         producto.porcentaje_impuesto = request.form['porcentaje-impuesto']
         producto.redondeo = request.form['redondeo']
