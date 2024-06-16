@@ -382,6 +382,15 @@ def update(id):
 
     return render_template('mps/update.html', dato=mps, inicio=inicio, final=final)
 
+def ordernar_diccionario(dicc):
+    dicco = sorted(dicc.items(), key=lambda x: x[0])
+    return dict(dicco)
+
+def ordenar_diccionarios_internos(dicc):
+    for k, v in dicc.items():
+        dicc[k] = ordernar_diccionario(v)
+
+    return dicc
 
 @bp.route('/view/<int:id>')
 @login_required
@@ -400,6 +409,21 @@ def view(id):
 
     dict_demandas = {(demanda.producto_id, demanda.semana): demanda for demanda in demandas}
 
+    dict_prod_semana_demandas = {}
+    for demanda in demandas:
+        if demanda.producto in dict_prod_semana_demandas:
+            dict_semana_demandas = dict_prod_semana_demandas[demanda.producto]
+            dict_semana_demandas[demanda.semana] = demanda.cantidad
+        else:
+            dict_prod_semana_demandas[demanda.producto] = {demanda.semana: demanda.cantidad}
+
+    # flash(dict_prod_semana_demandas)
+
+    ordenar_diccionarios_internos(dict_prod_semana_demandas)
+
+    # flash(dict_prod_semana_demandas)
+
+
     query_semanas = (db.session.query(PlanMaestroProduccionDemandas.semana)
                      .filter(PlanMaestroProduccionDemandas.mps_id == id)
                      .order_by(PlanMaestroProduccionDemandas.semana.asc())
@@ -407,12 +431,34 @@ def view(id):
 
     semanas = [semana[0] for semana in query_semanas.all()]
 
+    # Crear figura y definir estilo de gráfico
+    limite = 8 * 60 * 5
+    datos_grafico = {}
+    for producto, semanas_demandas in dict_prod_semana_demandas.items():
+        datos_grafico[producto.nombre] = [ producto.minutos_produccion * demanda for semana, demanda in semanas_demandas.items()]
+
+    # flash(datos_grafico)
+    fig, ax = plt.subplots()
+
+    ax.stackplot(semanas, datos_grafico.values(),
+                 labels=datos_grafico.keys(), alpha=0.8)
+    ax.axhline(limite, color='red', linestyle='--', label='Capacidad máxima')
+    ax.legend(loc='upper left', reverse=True)
+    ax.set_title('Demandas en minutos')
+    ax.set_xlabel('Semanas')
+    ax.set_ylabel('Minutos')
+    # add tick at every 200 million people
+    ax.yaxis.set_minor_locator(mticker.MultipleLocator(5000))
+    buf = BytesIO()
+    fig.savefig(buf, format="png")
+
+    chart_data = base64.b64encode(buf.getbuffer()).decode("ascii")
 
     inicio = f'{mps.inicio.year}-W{mps.inicio.isocalendar()[1]}'
     final = f'{mps.fin.year}-W{mps.fin.isocalendar()[1]}'
 
     return render_template('mps/view.html', dato=mps, productos_relacionados=productos_relacionados, inicio=inicio,
-                           final=final, semanas=semanas, demandas=dict_demandas)
+                           final=final, semanas=semanas, demandas=dict_demandas, chart_data= chart_data)
 
 
 @bp.route('/product_add/<int:id>', methods=['GET', 'POST'])

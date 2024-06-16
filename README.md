@@ -2,7 +2,11 @@
 
 ## Proyecto de Ingeniería de Operaciones
 
-### Tecnologías
+### Versión mínima de Python
+Este proyecto usa características del API de Python que están presentes en Python 3.11 o superior, 
+se recomienda instalar la versión al menos 3.12.
+
+### Paquetes requeridos para la ejecución
 Para poder correr este proyecto se tiene que instalar primero
 ```
 pip install -r .\requirements.txt
