@@ -315,8 +315,13 @@ def calcular_nivelado(id):
         datos_grafico[producto.nombre] = [ producto.minutos_produccion * d for d in demandas]
     fig, ax = plt.subplots()
 
-    ax.stackplot(semanas, datos_grafico.values(),
-                 labels=datos_grafico.keys(), alpha=0.8)
+    encabezados = list(datos_grafico.keys())
+    valores = np.array(list(datos_grafico.values()))
+
+    for i in range(valores.shape[0]):
+        ax.bar(semanas, valores[i], bottom=np.sum(valores[:i], axis=0), label=encabezados[i])
+    # ax.stackplot(semanas, datos_grafico.values(),
+    #              labels=datos_grafico.keys(), alpha=0.8)
     ax.axhline(limite, color='red', linestyle='--', label='Capacidad máxima')
     ax.legend(loc='upper left', reverse=True)
     ax.set_title('MPS Nivelados en minutos')
@@ -440,8 +445,13 @@ def view(id):
     # flash(datos_grafico)
     fig, ax = plt.subplots()
 
-    ax.stackplot(semanas, datos_grafico.values(),
-                 labels=datos_grafico.keys(), alpha=0.8)
+    encabezados = list(datos_grafico.keys())
+    valores = np.array(list(datos_grafico.values()))
+
+    for i in range(valores.shape[0]):
+        ax.bar(semanas, valores[i], bottom=np.sum(valores[:i], axis=0), label=encabezados[i])
+    # ax.stackplot(semanas, datos_grafico.values(),
+    #              labels=datos_grafico.keys(), alpha=0.8)
     ax.axhline(limite, color='red', linestyle='--', label='Capacidad máxima')
     ax.legend(loc='upper left', reverse=True)
     ax.set_title('Demandas en minutos')
