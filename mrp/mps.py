@@ -152,7 +152,7 @@ def create():
                                     fin=final,
                                     esta_finalizado=esta_finalizado)
 
-        db.session.add(mps) #
+        db.session.add(mps) #mary 
         id: int = -1
         try:
             db.session.commit()
