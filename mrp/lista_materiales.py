@@ -155,7 +155,7 @@ def create():
         finally:
             db.session.close()
 
-        return redirect(url_for('lista_materiales.view', id=id))
+        return redirect(url_for('bom.view', id=id))
 
     productos = Producto.query.all()
     unidades = Unidad.query.all()
