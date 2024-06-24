@@ -1,10 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, url_for, g, abort
 from flask import (send_file, stream_with_context, Response, flash)
 from io import BytesIO, StringIO
-from datetime import datetime, timedelta, date
 import csv
 from mrp.auth import login_required
-from .models import ListaMateriales
+from .models import ListaMateriales, Producto, Unidad
 from mrp import db
 from sqlite3 import IntegrityError
 
@@ -126,28 +125,23 @@ def csv_template():
 @login_required
 def create():
     if request.method == 'POST':
-        nombre: str = request.form['nombre']
-        inicio_str: str = request.form['inicio']
-        inicio_y, inicio_w = inicio_str.split('-')
-        inicio_iso_week_str = f"{inicio_y}-{inicio_w}-1"
-        inicio = date.fromisoformat(inicio_iso_week_str)
+        producto_id: int = int(request.form['producto'])
+        unidad_id: int = int(request.form['unidad'])
+        costo_componentes: float = float(request.form['costo_componentes'])
+        comentario: str = request.form.get('comentario', '')
 
-        final_str: str = request.form['final']
-        final_y, final_w = final_str.split('-')
-        final_iso_week_str = f"{final_y}-{final_w}-1"
-        final = date.fromisoformat(final_iso_week_str)
+        lista_materiales = ListaMateriales(
+            producto_id=producto_id,
+            unidad_id=unidad_id,
+            costo_componentes=costo_componentes,
+            comentario=comentario
+        )
 
-        esta_finalizado: bool = request.form.get('esta-finalizado', '') == 'on'
-        mps = ListaMateriales(nombre=nombre,
-                                    inicio=inicio,
-                                    fin=final,
-                                    esta_finalizado=esta_finalizado)
-
-        db.session.add(mps)
+        db.session.add(lista_materiales)
         id: int = -1
         try:
             db.session.commit()
-            id = mps.id
+            id = lista_materiales.id
             print(id)
         except AssertionError as err:
             db.session.rollback()
@@ -161,13 +155,15 @@ def create():
         finally:
             db.session.close()
 
-        return redirect(url_for('mps.view', id=id))
+        return redirect(url_for('lista_materiales.view', id=id))
 
-    now = datetime.now()
-    hoy_str = now.strftime('%Y-%m-%d')
-    hoyw_str = f"{now.year}-{now.isocalendar()[1]}"
-    final = now + timedelta(days=28)
-    final_str = final.strftime('%Y-%m-%d')
-    finalw_str = f"{final.year}-{final.isocalendar()[1]}"
+    productos = Producto.query.all()
+    unidades = Unidad.query.all()
 
-    return render_template('bom/create.html', inicio=hoyw_str, final=finalw_str)
+    return render_template('bom/create.html', productos=productos, unidades=unidades)
+
+@bp.route('/view/<int:id>', methods=['GET'])
+@login_required
+def view(id):
+    lista_materiales = ListaMateriales.query.get_or_404(id)
+    return render_template('bom/view.html', lista_materiales=lista_materiales)

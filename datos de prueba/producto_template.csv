@@ -1,0 +1,6 @@
+﻿SKU;Nombre;Categoría;Unidad;Cantidad total;Cantidad disponible;Cantidad reservado;Costo;Porcentaje impuesto;Redondeo;Modo de cálculo de utilidad;Porcentaje utilidad;Monto utilidad;Minutos producción;Scrap producción;Scrap almacenamiento;Estado
+7440101;Galletas de chocolate;POS;kg;10;10;0;50;13;25;Por porcentaje;50;0;5;10;5;Activo
+7441254;Galletas de vainilla;POS;kg;12;12;0;150;13;25;Por porcentaje;50;0;7;8;1;Activo
+7441487;Galletas de chocochips;POS;kg;154;154;0;200;13;25;Por monto;50;8;7;1;1;Activo
+7448745;Galletas de limón;POS;kg;44;44;0;250;13;25;Por monto;50;200;9;6;3;Activo
+7448451;Palitos de queso;RES;kg;84;84;0;300;13;25;Por porcentaje;50;0;10;5;5;Activo

@@ -60,7 +60,7 @@
         {% for dato in datos | reverse %}
         <tr>
             <td>
-                <a href="{{url_for('mps.view', id = dato.id)}}"
+                <a href="{{url_for('bom.view', id = dato.id)}}"
                 class="btn btn-light btn-sm d-block my-1">
                     Consecutivo {{dato.id}}</a>
             </td>

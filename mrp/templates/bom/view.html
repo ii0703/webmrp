@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="container-sm">
+    <h3 class="text-center mt-3 mb-3">Detalle de Lista de Materiales</h3>
+    <div class="card">
+        <div class="card-header">
+            Lista de Materiales #{{ lista_materiales.id }}
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Producto: {{ lista_materiales.producto.nombre }}</h5>
+            <p class="card-text">Unidad: {{ lista_materiales.unidad.nombre }}</p>
+            <p class="card-text">Costo Componentes: {{ lista_materiales.costo_componentes }}</p>
+            <p class="card-text">Comentario: {{ lista_materiales.comentario }}</p>
+        </div>
+    </div>
+    <div class="mt-3 text-center">
+        <a href="{{ url_for('bom.create') }}" class="btn btn-success">Crear Nueva Lista de Materiales</a>
+        <a href="{{ url_for('bom.index') }}" class="btn btn-secondary">Volver al Listado</a>
+    </div>
+</section>
+{% endblock %}

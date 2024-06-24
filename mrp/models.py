@@ -292,7 +292,6 @@ class ListaMateriales(db.Model):
     costo_operativo: Mapped[float] = mapped_column(Numeric(12, 2), default=0.0)
     tiempo_fabricacion_en_minutos: Mapped[float] = mapped_column(Double, default=0.0)
     comentario: Mapped[Optional[str]] = mapped_column(String[100])
-    fecha_registro: Mapped[date] = mapped_column(Date, server_default=func.now())
     esta_activo: Mapped[bool] = mapped_column(Boolean, default=True)
     fecha_vencimiento: Mapped[Optional[date]] = mapped_column(Date)
     componentes: Mapped[list['ListaMaterialesComponentes']] = relationship(back_populates='lista_materiales')
